@@ -1,0 +1,15 @@
+Variables legend of dataset 'fake_dataRD.Rdata'
+See Supplementary Material A for details.
+
+id = patient's ID (index i)
+event = event index (index j=1,...,n_i)
+deltaR = dichotomous variables which indicates if the patient experienced a
+	 re-hospitalization event (1) or not at the considered time (variable delta^R_{ij})
+deltaD = dichotomous variables which indicates if the patient was dead (1) or
+		censored (0) at the the considered time (variable delta^D_{ij})
+gaptime = gap-time between consecutive events (variable T_{ij})
+sex = patient's gender
+age = patient's age [years] registered at the last known hospitalisation
+ncom = number of patient's comorbidity registered at the last known hospitalisation
+adherent = dichotomous variable indicating whether the patient was adherent to ACE therapy
+	   according to the proportion of days covered method with an 80% threshold
