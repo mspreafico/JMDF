@@ -9,6 +9,7 @@ library(data.table)
 load("data/fake_dataRD.Rdata")
 
 ## load functions
+source('functions/data_format.R')
 source('functions/JMdiscfrail.R')
 source('functions/stratified_base_surv.R')
 
@@ -49,9 +50,14 @@ result$cumhazR
 result$cumhazD
 
 # Random effects
+result$K
 result$w
 result$P
+# Subjects' subgroups
+head(result$id.subgroup)
+table(result$id.subgroup$subgroup)
 
+# Estimated mass-points
 masses = paste0('(',sprintf("%.3f", round(result$P[,1],3)),', ',
                 sprintf("%.3f", round(result$P[,2],3)),')')
 

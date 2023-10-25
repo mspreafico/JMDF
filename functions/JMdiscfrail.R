@@ -29,22 +29,20 @@ source('functions/log_lik_fun.R')
 ################################################################################
 ## OUTPUT: The JMdiscfrail() function returns a list with elements:
 ##----------------
-## - $modelR:     Estimated recurrent event model
-## - $modelD:     Estimated terminal event model
-## - $w:          Estimated weights
-## - $P:          Estimated masses
-## - $K:          Number of mass points
-## - $cumhazR:    Estimated baseline cumulative hazard for recurrent events
-## - $cumhazD:    Estimated baseline cumulative hazard for the terminal event
-## - $LogL:       Log-likelihood
-## - $classLogL:  Classification log-likelihood
-## - $AIC:        Akaike Information Criterion
-## - $Table:      Table of number of subjects assigned to each mass-point
-## - $groups:     Assigned mass-point for each subject
-## - $n.iter:     Number of iterations
-## - $survfitR:   Estimated baseline survival probability for recurrent events (survfit object)
-## - $survfitD:   Estimated baseline survival probability for the terminal event (survfit object)
-## - $IDs:        Subjects' id
+## - $modelR:       Estimated recurrent event model
+## - $modelD:       Estimated terminal event model
+## - $K:            Number of mass points
+## - $w:            Estimated weights
+## - $P:            Estimated masses
+## - $id.subgroups: Assigned mass-point for each subject
+## - $cumhazR:      Estimated baseline cumulative hazard for recurrent events
+## - $cumhazD:      Estimated baseline cumulative hazard for the terminal event
+## - $survfitR:     Estimated baseline survival probability for recurrent events (survfit object)
+## - $survfitD:     Estimated baseline survival probability for the terminal event (survfit object)
+## - $LogL:         Log-likelihood
+## - $classLogL:    Classification log-likelihood
+## - $AIC:          Akaike Information Criterion
+## - $n.iter:       Number of iterations
 ################################################################################
 
 
@@ -297,10 +295,10 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     
     # Maximization Step
     # Latent partition
-    belonging <- as.numeric( apply(Z, 1, which.max) )
+    P_group <- as.numeric( apply(Z, 1, which.max) )
     
     # Support Reduction II: Grid Shrinking - Unassigned points
-    t<-table(factor(belonging, levels = 1:K))
+    t<-table(factor(P_group, levels = 1:K))
     to_elim<-which(as.numeric(t)==0)
     if(length(to_elim)>0){
       Z<-Z[,-to_elim]
@@ -375,13 +373,12 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     
     # Save 
     temp_list <- list("modelR" = temp_model1, "modelD" = temp_model2,
-                      "w" = w, "P" = P_show, "K" = K,
+                      "K" = K, "w" = w, "P" = P_show,
+                      "id.subgroups" = cbind.data.frame('id' = ID2, 'subgroup' = P_group),
                       "cumhazR" = cumhaz1, "cumhazD" = cumhaz2,
+                      "survfitR" = s1, "survfitD" = s2,
                       "LogL" = LogL, "classLogL" = classLogL, "AIC" = AIC,
-                      "Table" = table(belonging), "groups" = belonging,
-                      "n.iter" = it, 
-                      "survfitR" = s1, "survfitD" = s2, 
-                      "IDs" = ID2)
+                      "n.iter" = it)
     
     # Update iteration
     it <- it + 1

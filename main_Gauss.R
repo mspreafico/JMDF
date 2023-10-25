@@ -41,7 +41,6 @@ result = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
 
 # Fixed effects - Recurrent (betas)
 result$modelR
-result$cumhaz1
 # Fixed effects - Terminal (gammas)
 result$modelD
 
@@ -51,9 +50,14 @@ result$cumhazR
 result$cumhazD
 
 # Random effects
+result$K
 result$w
 result$P
+# Subjects' subgroups
+head(result$id.subgroup)
+table(result$id.subgroup$subgroup)
 
+# Estimated mass-points
 masses = paste0('(',sprintf("%.3f", round(result$P[,1],3)),', ',
                 sprintf("%.3f", round(result$P[,2],3)),')')
 
