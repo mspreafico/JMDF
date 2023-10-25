@@ -8,11 +8,14 @@ source('functions/log_lik_fun.R')
 ## Joint model with discretely-distributed non-parametric frailty
 ################################################################################
 ## INPUT PARAMETERS:
-## - dataR:     Recurrent event data
-## - formulaR:  Formula for recurrent model
+##--------------
+## - dataR:     Recurrent event data 
+##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime
+## - formulaR:  Covariate formula for recurrent model ' ~ xR_1 +... + xR_p1 '
 ## - dataD:     Terminal event data
-## - formulaD:  Formula for terminal model
-## - init:      Initialization: "gauss" = Gaussian (default); "unif = Uniform
+##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime'
+## - formulaD:  Covariate formula for terminal model ' ~ xD_1 + ... + xD_p2 '
+## - init:      Initialization: "gauss" = Gaussian (default); "unif" = Uniform
 ## - distance:  Distance measure to be used. This must be one of "euclidean" (default), 
 ##              "maximum", "manhattan", "canberra", "binary" or "minkowski"
 ## - Sigma:     Variance matrix for Gaussian Initialization
@@ -24,6 +27,26 @@ source('functions/log_lik_fun.R')
 ## - max.it:    Maximum number of iterations (default is 100)  
 ## - toll:      Stopping threshold (default is 1e-3)
 ################################################################################
+## OUTPUT: The JMdiscfrail() function returns a list with elements:
+##----------------
+## - $modelR:     Estimated recurrent event model
+## - $modelD:     Estimated terminal event model
+## - $w:          Estimated weights
+## - $P:          Estimated masses
+## - $K:          Number of mass points
+## - $cumhazR:    Estimated baseline cumulative hazard for recurrent events
+## - $cumhazD:    Estimated baseline cumulative hazard for the terminal event
+## - $LogL:       Log-likelihood
+## - $classLogL:  Classification log-likelihood
+## - $AIC:        Akaike Information Criterion
+## - $Table:      Table of number of subjects assigned to each mass-point
+## - $groups:     Assigned mass-point for each subject
+## - $n.iter:     Number of iterations
+## - $survfitR:   Estimated baseline survival probability for recurrent events (survfit object)
+## - $survfitD:   Estimated baseline survival probability for the terminal event (survfit object)
+## - $IDs:        Subjects' id
+################################################################################
+
 
 JMdiscfrail = function(dataR, formulaR, dataD, formulaD, 
                        init = "gauss", distance = "euclidean", 
@@ -202,8 +225,8 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     beta_old <- beta
     gamma_old <- gamma
     
-    # support Reduction I: Grid Shrinking
-    # Grid Shrinking NEW
+    # Support Reduction I: Grid Shrinking
+    # Grid Shrinking
     D<-dist(P, method = distance)
     D<-as.matrix(D)
     D[upper.tri(D)]<-10
