@@ -10,7 +10,7 @@ source('functions/log_lik_fun.R')
 ## INPUT PARAMETERS:
 ##--------------
 ## - dataR:     Recurrent event data 
-##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime
+##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime'
 ## - formulaR:  Covariate formula for recurrent model ' ~ xR_1 +... + xR_p1 '
 ## - dataD:     Terminal event data
 ##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime'
