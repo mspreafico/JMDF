@@ -1,4 +1,4 @@
-# JMdiscfrail
+# JMDF: Joint Model with Discretely-distributed non-parametric Frailty
 Code for implementing a joint model of recurrent and terminal events with discretely-distributed non-parametric frailty.
 
 
