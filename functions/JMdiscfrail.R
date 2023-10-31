@@ -15,13 +15,13 @@ source('functions/log_lik_fun.R')
 ## - dataD:     Terminal event data
 ##              It must contain variables 'id', 'deltaR', 'deltaD', and 'gaptime'
 ## - formulaD:  Covariate formula for terminal model ' ~ xD_1 + ... + xD_p2 '
-## - init:      Initialization: "gauss" = Gaussian (default); "unif" = Uniform
+## - init.unif: Initialization: Uniform if TRUE (default); Gaussian if FALSE
 ## - distance:  Distance measure to be used. This must be one of "euclidean" (default), 
 ##              "maximum", "manhattan", "canberra", "binary" or "minkowski"
 ## - Sigma:     Variance matrix for Gaussian Initialization
 ## - mu:        Mean vector for Gaussian Initialization
-## - ulim.unif: Limits for iniital grid using Uniform Initialization (u-axis)
-## - vlim.unif: Limits for iniital grid using Uniform Initialization (v-axis) 
+## - ulim.unif: Limits for initial grid using Uniform Initialization (u-axis)
+## - vlim.unif: Limits for initial grid using Uniform Initialization (v-axis) 
 ## - M:         Initial number of support points 
 ## - L:         Value of threshold for the merging process
 ## - max.it:    Maximum number of iterations (default is 100)  
@@ -34,6 +34,7 @@ source('functions/log_lik_fun.R')
 ## - $K:            Number of mass points
 ## - $w:            Estimated weights
 ## - $P:            Estimated masses
+## - $se.P:         Estimated Standard Errors for P
 ## - $id.subgroups: Assigned mass-point for each subject
 ## - $cumhazR:      Estimated baseline cumulative hazard for recurrent events
 ## - $cumhazD:      Estimated baseline cumulative hazard for the terminal event
@@ -47,7 +48,7 @@ source('functions/log_lik_fun.R')
 
 
 JMdiscfrail = function(dataR, formulaR, dataD, formulaD, 
-                       init = "gauss", distance = "euclidean", 
+                       init.unif = TRUE, distance = "euclidean", 
                        Sigma=NULL, mu=NULL, ulim.unif=NULL, vlim.unif=NULL, 
                        M, L, max.it = 100, toll = 1e-3 ){
   #------------------------------------------------------------------------
@@ -123,7 +124,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
 
   ## Grid Initialization
   set.seed(210197)
-  if(init=='gauss'){
+  if(!init.unif){
     K <- M
     if(is.null(Sigma) | is.null(mu)){
       stop('Please define Sigma matrix and/or mu vector for Gaussian initialization')
@@ -134,7 +135,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     P_show<-P
     P_show[,1]<-P[,1]-rep(w%*%P[,1],length(P[,1]))
     P_show[,2]<-P[,2]-rep(w%*%P[,2],length(P[,2]))
-  } else if(init=='unif') {
+  } else {
     if(is.null(ulim.unif) | is.null(vlim.unif)){
       stop('Please define grid limits for u-axis and/or v-axis in Uniform initialization')
     }
@@ -147,9 +148,8 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     P_show[,1]<-P[,1]-rep(w%*%P[,1],length(P[,1]))
     P_show[,2]<-P[,2]-rep(w%*%P[,2],length(P[,2]))
     K<-dim(P)[1]
-  }else{
-    stop('Input init should be unif or gauss')
   }
+  
   # Initial Grid Shrinkage
   is_near<-TRUE
   while(is_near){
@@ -173,13 +173,14 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     }
   }
   
-  # Assign patient to random frailty, built frailties vectors
+  # Assign patient to random frailty, built frailty vectors
   P_index <- sample(1:K,size=N,replace = T, prob = w)
   P_off1  <- P[,1][P_index[groups1]]
   P_off2  <- P[,2][P_index[groups2]]
   
-  ## Parameter initialization
-  # Estimate Initial Recurrent model, Cumulative Hazard and Hazard
+  
+  ## Parameter Initialization
+  # Estimate initial recurrent model, cumulative hazard and hazard
   formula1 = as.formula(paste0('Surv(time1,deltaR)',formulaR,'+ offset(P_off1)'))
   cox1 <- coxph(formula1, data=dataR)
   beta<-cox1$coefficients
@@ -191,7 +192,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
       haz1$hazard[j]<-haz1$hazard[j-1]
   }
   
-  # Estimate Initial Terminal model, Cumulative Hazard and Hazard
+  # Estimate initial terminal model, cumulative hazard and hazard
   formula2 = as.formula(paste0('Surv(time2,deltaD)',formulaD,'+ offset(P_off2)'))
   cox2 <- coxph(formula2, data=dataD)
   gamma <-cox2$coefficients
@@ -270,6 +271,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
                             H02t)
       
       for(l in 1:K){
+        if(K==1){P=matrix(as.vector(P), nrow=1, ncol=2)}
         E_formula1[i,l] <- ifelse( ncov1 > 0,
                                    sum( H01t*ebz1*exp(P[l,1])),
                                    sum( H01t*exp(P[l,1]) ) )
@@ -324,6 +326,14 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     P[,1]   <- log(( as.numeric(D1) %*% Z )/( E_part1 %*% Z))
     P[,2]   <- log(( as.numeric(D2) %*% Z )/( E_part2 %*% Z))
     
+    # Standard error computation
+    SE_P <- matrix(NA, nrow=K, ncol=2)
+    hess1 <- - ( E_part1 %*% Z)*exp(P[,1])
+    hess2 <- - ( E_part2 %*% Z)*exp(P[,2])
+    SE_P[,1] <- 1/(-hess1)
+    SE_P[,2] <- 1/(-hess2)
+    
+    # 
     P_show    <- P
     P_show[,1]<- P[,1] - as.vector(w %*% P[,1])
     P_show[,2]<- P[,2] - as.vector(w %*% P[,2])
@@ -358,7 +368,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
         haz2$hazard[j]<-haz2$hazard[j-1]
     }
     
-    # Convergence
+    # Check for convergence
     if(length(w)==length(w_old)){
       eps = max(abs(w - w_old),na.rm=T) + max(abs(gamma - gamma_old)) + max(abs(beta - beta_old)) 
       converged = ifelse(eps < toll, TRUE, FALSE)
@@ -373,7 +383,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     
     # Save 
     temp_list <- list("modelR" = temp_model1, "modelD" = temp_model2,
-                      "K" = K, "w" = w, "P" = P_show,
+                      "K" = K, "w" = w, "P" = P_show, "se.P" = SE_P,
                       "id.subgroups" = cbind.data.frame('id' = ID2, 'subgroup' = P_group),
                       "cumhazR" = cumhaz1, "cumhazD" = cumhaz2,
                       "survfitR" = s1, "survfitD" = s2,

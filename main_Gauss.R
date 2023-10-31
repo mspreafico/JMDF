@@ -27,7 +27,7 @@ muG = c(0,0)
 
 result = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      dataD, formulaD = '~ sex + age + ncom + adherent',
-                     init = 'gauss',
+                     init.unif = FALSE,
                      distance = "euclidean",
                      Sigma = SigmaG,
                      mu = muG,
@@ -53,6 +53,7 @@ result$cumhazD
 result$K
 result$w
 result$P
+result$se.P
 # Subjects' subgroups
 head(result$id.subgroup)
 table(result$id.subgroup$subgroup)

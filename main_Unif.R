@@ -28,7 +28,7 @@ vlim = c(mu[2]-6*sqrt(Sigma[2,2]), mu[2]+6*sqrt(Sigma[2,2]))
 
 result = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      dataD, formulaD = '~ sex + age + ncom + adherent',
-                     init = 'unif',
+                     init.unif = TRUE,
                      distance = "euclidean",
                      ulim.unif = ulim,
                      vlim.unif = vlim,
@@ -53,6 +53,7 @@ result$cumhazD
 result$K
 result$w
 result$P
+result$se.P
 # Subjects' subgroups
 head(result$id.subgroup)
 table(result$id.subgroup$subgroup)
