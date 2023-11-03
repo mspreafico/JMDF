@@ -26,6 +26,8 @@ source('functions/log_lik_fun.R')
 ## - L:         Value of threshold for the merging process
 ## - max.it:    Maximum number of iterations (default is 100)  
 ## - toll:      Stopping threshold (default is 1e-3)
+## - centering: Centering cumulative baseline hazards and mass-points around 
+##              (u,v)=(0,0). This helps in interpreting the results.
 ################################################################################
 ## OUTPUT: The JMdiscfrail() function returns a list with elements:
 ##----------------
@@ -33,13 +35,11 @@ source('functions/log_lik_fun.R')
 ## - $modelD:       Estimated terminal event model
 ## - $K:            Number of mass points
 ## - $w:            Estimated weights
-## - $P:            Estimated masses
+## - $P:            Estimated discrete random effect coordinates
 ## - $se.P:         Estimated Standard Errors for P
 ## - $id.subgroups: Assigned mass-point for each subject
 ## - $cumhazR:      Estimated baseline cumulative hazard for recurrent events
 ## - $cumhazD:      Estimated baseline cumulative hazard for the terminal event
-## - $survfitR:     Estimated baseline survival probability for recurrent events (survfit object)
-## - $survfitD:     Estimated baseline survival probability for the terminal event (survfit object)
 ## - $LogL:         Log-likelihood
 ## - $classLogL:    Classification log-likelihood
 ## - $AIC:          Akaike Information Criterion
@@ -50,7 +50,7 @@ source('functions/log_lik_fun.R')
 JMdiscfrail = function(dataR, formulaR, dataD, formulaD, 
                        init.unif = TRUE, distance = "euclidean", 
                        Sigma=NULL, mu=NULL, ulim.unif=NULL, vlim.unif=NULL, 
-                       M, L, max.it = 100, toll = 1e-3 ){
+                       M, L, max.it = 100, toll = 1e-3, centering=TRUE){
   #------------------------------------------------------------------------
   ## Auxiliary 
   
@@ -121,7 +121,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
   
   #------------------------------------------------------------------------
   ## INITIALIZATION
-
+  
   ## Grid Initialization
   set.seed(210197)
   if(!init.unif){
@@ -333,11 +333,6 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     SE_P[,1] <- 1/(-hess1)
     SE_P[,2] <- 1/(-hess2)
     
-    # 
-    P_show    <- P
-    P_show[,1]<- P[,1] - as.vector(w %*% P[,1])
-    P_show[,2]<- P[,2] - as.vector(w %*% P[,2])
-    
     # Frailties update
     P_off1 <-log((Z%*%exp(matrix(P[,1])))[groups1])
     P_off2 <-log((Z%*%exp(matrix(P[,2])))[groups2])
@@ -381,12 +376,22 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
                             E_haz1 = E_haz1, E_haz2 = E_haz2)
     AIC = 2*( 2*K+(K-1)+length(beta)+length(gamma) ) - 2*classLogL
     
+    # Centering baseline cumhaz and mass points for a preferable interpretation
+    P_show    <- P
+    cumhaz1_show <- cumhaz1
+    cumhaz2_show <- cumhaz2
+    if(centering){
+      P_show[,1]<- P[,1] - as.vector(w %*% P[,1])
+      P_show[,2]<- P[,2] - as.vector(w %*% P[,2])
+      cumhaz1_show$cumhaz <- cumhaz1$cumhaz*exp(as.vector(w %*% P[,1]))
+      cumhaz2_show$cumhaz <- cumhaz2$cumhaz*exp(as.vector(w %*% P[,2]))
+    }
+    
     # Save 
     temp_list <- list("modelR" = temp_model1, "modelD" = temp_model2,
                       "K" = K, "w" = w, "P" = P_show, "se.P" = SE_P,
                       "id.subgroups" = cbind.data.frame('id' = ID2, 'subgroup' = P_group),
-                      "cumhazR" = cumhaz1, "cumhazD" = cumhaz2,
-                      "survfitR" = s1, "survfitD" = s2,
+                      "cumhazR" = cumhaz1_show, "cumhazD" = cumhaz2_show,
                       "LogL" = LogL, "classLogL" = classLogL, "AIC" = AIC,
                       "n.iter" = it)
     

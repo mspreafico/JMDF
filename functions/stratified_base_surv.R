@@ -1,5 +1,5 @@
-# Function that computes th stratified survival probability curves for recurrent
-# and terminal processes from a fitted JMdiscfrail.
+# Function that computes the frailty-stratified BASELINE survival curves 
+# for recurrent and terminal processes from a fitted JMdiscfrail.
 # INPUT: jmdf.out = output of function JMdiscfrail()
 
 stratified.base.surv = function(jmdf.out){

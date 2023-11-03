@@ -2,7 +2,7 @@
 rm(list=ls())
 
 ## set working directory
-setwd("~/github/JMdiscfrail")
+setwd("~/github/JMDF")
 
 ## load data
 library(data.table)
@@ -64,7 +64,8 @@ masses = paste0('(',sprintf("%.3f", round(result$P[,1],3)),', ',
 
 dev.new()
 plot(result$P[,1], result$P[,2], cex=result$w*10,
-     xlim = range(result$P[,1]), ylim = range(result$P[,2]),
+     xlim = range(result$P[,1])+c(-0.1,0.1), 
+     ylim = range(result$P[,2])+c(-0.1,0.1),
      col=1:result$K, pch=16,
      xlab='Recurrent (u)', ylab='Terminal (v)', 
      main='Distribution of masses',
@@ -74,11 +75,13 @@ abline(v=0, lty=2)
 legend(0.4,-0.1, col=1:(result$K), 
        pch = rep(16,result$K), y.intersp=1,
        legend = paste0('P',seq(1,result$K),': ',masses,' - w',seq(1,result$K),': ',round(result$w,3)))
+# The mass point is not visible is its weight is very small
 
 
-#----------------------------#
-# STRATIFIED SURVIVAL CURVES #
-#----------------------------#
+#-------------------------------------#
+# STRATIFIED BASELINE SURVIVAL CURVES #
+#-------------------------------------#
+# Note: Fixed-effects are all set to 0 or reference-level.
 survival = stratified.base.surv(result)
 
 dev.new()
@@ -101,8 +104,6 @@ plot(survD[,1], survD[,2], type='l', lty=2, ylim =c(0,1),
 for(k in 1:(result$K)){
   points(survD[,1], survD[,(k+2)], type='l', col=k)
 }
-legend('topright', col=c('black',1:(result$K)), 
+legend('bottomright', col=c('black',1:(result$K)), 
        lty = c(2,rep(1,result$K)),
        legend = colnames(survD[,2:(result$K+2)]))
-
-
