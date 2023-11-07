@@ -25,7 +25,7 @@ We provide some fake datasets in order to allow researchers who want to replicat
     
 - Sub-folder **./data/** contains fake dataset along with their legends:
 	- **data_legend.txt**: Variables legend of dataset 'fake_dataRD.Rdata'.
-	- **fake_dataRD.Rdata**: Datasets related to 200 fake patients for recurrent (dataR) and terminal (dataD) events (see Supplementary Material A for further details).
+	- **fake_dataRD.Rdata**: Datasets related to 200 fake patients for recurrent (dataR) and terminal (dataD) events (see Appendix A of the *arXiv* reference for further details).
 
 ## Software
 - R software.
