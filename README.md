@@ -1,5 +1,5 @@
 # JMDF: Joint Model with Discretely-distributed non-parametric Frailty
-Code for implementing a joint model of recurrent and terminal events with discretely-distributed non-parametric frailty.
+Code for implementing a Joint Model of recurrent and terminal events with Discretely-distributed non-parametric Frailty.
 
 
 ### Reference
@@ -31,4 +31,4 @@ We provide some fake datasets in order to allow researchers who want to replicat
 - R software.
 - Packages: data.table, MASS, mvtnorm, survival.
   
-(Last update: October 31st, 2023)
+(Last update: November 7th, 2023)
