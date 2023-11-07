@@ -1,5 +1,5 @@
 Legend of variables for the datasets 'dataR' and 'dataD' contained in the file 'fake_dataRD.Rdata'
-See Supplementary Material A for details.
+See Appendix A of the arXiv reference for details.
 
 id = patient's ID (index i)
 event = event index (index j=1,...,n_i)
