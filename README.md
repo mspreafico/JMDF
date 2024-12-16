@@ -3,7 +3,7 @@ Code for implementing a Joint Model of recurrent and terminal events with Discre
 
 
 ### Reference
-Masci C, Spreafico M & Ieva F (2023). Joint modelling of recurrent and terminal events with discretely-distributed non-parametric frailty: application on re-hospitalizations and death in heart failure patients. https://arxiv.org/abs/2311.04103
+Masci C, Spreafico M & Ieva F. Joint modelling of recurrent and terminal events with discretely-distributed non-parametric frailty: application on re-hospitalizations and death in heart failure patients. https://arxiv.org/abs/2311.04103
 
 
 ### Data Availability
@@ -31,4 +31,4 @@ We provide some fake datasets in order to allow researchers who want to replicat
 - R software.
 - Packages: data.table, MASS, mvtnorm, survival.
   
-(Last update: November 8th, 2023)
+(Last update: December 16th, 2024)
