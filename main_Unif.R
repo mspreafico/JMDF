@@ -107,3 +107,4 @@ for(k in 1:(result$K)){
 legend('bottomright', col=c('black',1:(result$K)), 
        lty = c(2,rep(1,result$K)),
        legend = colnames(survD[,2:(result$K+2)]))
+
