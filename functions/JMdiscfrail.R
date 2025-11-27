@@ -2,8 +2,22 @@
 library(survival)
 library(MASS)
 library(mvtnorm)
-## load support functions for log-likelihood computations
-source('functions/log_lik_fun.R')
+
+## Support Functions for log-likelihood computation
+# Log-likelihood
+LogLik<-function(Z,w,E_formula1,E_formula2,E_haz1,E_haz2){
+  lw <-sum(Z%*%matrix(log(w)))
+  lr <- sum(Z*(E_haz1-E_formula1))
+  ld <- sum(Z*(E_haz2-E_formula2))
+  return (lw+lr+ld)
+}
+# Classification log-likelihood
+classLogLik<-function(Z,E_formula1,E_formula2,E_haz1,E_haz2){
+  lr <- sum(Z*(E_haz1-E_formula1))
+  ld <- sum(Z*(E_haz2-E_formula2))
+  return (lr+ld)
+}
+
 
 ## Joint model with discretely-distributed non-parametric frailty
 ################################################################################
@@ -47,9 +61,9 @@ source('functions/log_lik_fun.R')
 
 
 JMdiscfrail = function(dataR, formulaR, dataD, formulaD, 
-                       init.unif = TRUE, distance = "euclidean", 
+                       init.unif = TRUE, distance = "euclidean", P.weighted = FALSE,
                        Sigma=NULL, mu=NULL, ulim.unif=NULL, vlim.unif=NULL, 
-                       M, L, max.it = 100, toll = 1e-3){
+                       M, L, max.it = 100, toll = 1e-3, seed = 210197){
   #------------------------------------------------------------------------
   ## Auxiliary 
   
@@ -76,7 +90,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
   
   # Encode ID as numeric 
   groups1 <- match(ID1, unique(ID1))
-  groups2 <- match(ID2, unique(ID1))
+  groups2 <- match(ID2, unique(ID2))
   
   # Flag for 1-mass collapse
   collapse = FALSE
@@ -85,7 +99,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
   ## INITIALIZATION
   
   ## Grid Initialization
-  set.seed(210197)
+  set.seed(seed)
   if(!init.unif){
     K <- M
     if(is.null(Sigma) | is.null(mu)){
@@ -195,7 +209,11 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     out<-which(D == min(D), arr.ind = TRUE)
     if(D[out][1]<L){
       #merge
-      P_show[out[1,2],]=(P_show[out[1,2],]+P_show[out[1,1],])/2
+      if(P.weighted){
+        P_show[out[1,2],]=(P_show[out[1,2],]*w[out[1,2]]+P_show[out[1,1],]*w[out[1,1]])/(w[out[1,2]]+w[out[1,1]])
+      }else{
+        P_show[out[1,2],]=(P_show[out[1,2],]+P_show[out[1,1],])/2
+      }
       P_show<-P_show[-out[1,1],]
       #update weights
       w[out[1,2]]<-w[out[1,2]]+w[out[1,1]]
@@ -346,7 +364,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
     s2   <- survfit(temp_model2,data=dataD)
     cumhaz2$cumhaz = s2$cumhaz
     haz2$hazard = diff(c(0,cumhaz2$cumhaz))/diff(c(0,s2$time))
-    haz2$hazard = ifelse(haz2$hazard==0,1e-200,haz1$hazard)
+    haz2$hazard = ifelse(haz2$hazard==0,1e-200,haz2$hazard) ####!!!!
     
     # Check for convergence
     if(length(w)==length(w_old)){
