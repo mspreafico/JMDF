@@ -74,9 +74,9 @@ if (!dir.exists(res.dir)) {
   dir.create(res.dir)
 }
 
-ulim.0 = init.min.unif(folder)[[1]]
-vlim.0 = init.min.unif(folder)[[2]]
-L.mindist = init.min.unif(folder)[[3]]
+mu.0 = init.min.gauss(folder)[[1]]
+Sigma.0 = init.min.gauss(folder)[[2]]
+L.mindist = init.min.gauss(folder)[[3]]
 cat(paste0('Case ',folder,' as follows:
   Initialization: mu vector = (',mu.0[1],',',mu.0[2],'),
                   Sigma matrix = [',Sigma.0[1,1],',',Sigma.0[1,2],', ',Sigma.0[2,1],',',Sigma.0[2,2],']
