@@ -1,3 +1,17 @@
+################################################################################
+# 5.2. Simulation results: Fitting joint frailty model by Ng et al.'s
+################################################################################
+# This file estimates joint frailty models according to Ng et al. for data/scenarios 
+# generated under setting A (yielding approximately 80% death and 20% administrative censoring).
+#
+# To estimate Ng et al.'s models for data generated under setting B 
+# (yielding approximately 50% death and 50% administrative censoring):
+# 1. First, modify the value of `setting` in "01_data_generation.R" to 'B' and run it 
+#    to generate data under setting B.
+# 2. Then, modify lines 35-36 in this file to set `setting` to 'B' and run it.
+################################################################################
+
+
 # Session -> Set Working Directory -> To Source File Location
 #setwd('/home/spreaficom/jmdf/simstudy')
 file.path(getwd(),'simstudy')
@@ -19,7 +33,9 @@ source('sim_functions/extract_sim_results.R')
 # SELECT generated datasets:
 #   - Setting A yielding approximately 80% death and 20% administrative censoring
 #   - Setting B yielding approximately 50% death and 50% administrative censoring
-setting = 'A' #'B'
+setting = 'A' 
+#setting = 'B'
+
 data.dir = paste0('sim_data_',setting)
 # Create folder
 res.dir = paste0('sim_results_ng_',setting)

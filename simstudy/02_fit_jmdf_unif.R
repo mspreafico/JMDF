@@ -1,3 +1,23 @@
+################################################################################
+# 5.2. Simulation results: Fitting JMDF using Uniform initialization
+################################################################################
+# This file estimates JMDF using Uniform initialization for data/scenarios 
+# generated under setting A (yielding approximately 80% death and 20% administrative censoring),
+# initialization (ii) and threshold L = 1.5.
+#
+# To select different initialization (i or ii) and threshold L, modify the value 
+# of `folder` (lines 62-65: 'I_L1', 'II_L1', 'II_L15', or 'II_L2'). 
+# You must run the JMDF files separately for each initialization to get results 
+# corresponding to all choices.
+#
+# To estimate JMDFs for data generated under setting B 
+# (yielding approximately 50% death and 50% administrative censoring):
+# 1. First, modify the value of `setting` in "01_data_generation.R" to 'B' and run it 
+#    to generate data under setting B.
+# 2. Then, modify lines 43-44 in this file to set `setting` to 'B';
+# 3. Select the desired initialization (i or ii) and threshold L (`folder`) and run it.
+################################################################################
+
 # Session -> Set Working Directory -> To Source File Location
 #setwd('/home/spreaficom/jmdf/simstudy')
 file.path(getwd(),'simstudy')
@@ -14,13 +34,14 @@ source('sim_functions/extract_sim_results.R')
 
 library(mcprogress)
 
-
 # Data setting
 #-----------------------------------------------------------------
 # SELECT generated datasets:
 #   - Setting A yielding approximately 80% death and 20% administrative censoring
 #   - Setting B yielding approximately 50% death and 50% administrative censoring
-setting = 'A' #'B'
+setting = 'A' 
+#setting = 'B'
+
 data.dir = paste0('sim_data_',setting)
 res.dir = paste0('sim_results_',setting)
 if (!dir.exists(res.dir)) {

@@ -1,4 +1,18 @@
+################################################################################
+# 5.1. Data generation
+################################################################################
+# This file generates data as described in Manuscript Section 5.1, under setting
+# A (yielding approximately 80% death and 20% administrative censoring).
+#
+# To generate data under setting B (yielding approximately 50% death and 50% 
+# administrative censoring), modify the value of `setting` to 'B' (lines 33-34)
+# and run it.
+################################################################################
+
+
 # Session -> Set Working Directory -> To Source File Location
+#setwd('/home/spreaficom/jmdf/simstudy')
+file.path(getwd(),'simstudy')
 
 # Simulate B data sets for each scenario
 source('sim_functions/sim_data_joint_frail.R')
@@ -19,7 +33,9 @@ b_max_fup=120
 # SELECT setting:
 #   - Setting A yielding approximately 80% death and 20% administrative censoring
 #   - Setting B yielding approximately 50% death and 50% administrative censoring
-setting = 'A' 
+setting = 'A'
+# setting = 'B'
+
 # Shape parameters
 tau_R=1.3 
 tau_D=1.5
