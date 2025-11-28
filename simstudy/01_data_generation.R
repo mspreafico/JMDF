@@ -12,7 +12,7 @@
 
 # Session -> Set Working Directory -> To Source File Location
 #setwd('/home/spreaficom/jmdf/simstudy')
-file.path(getwd(),'simstudy')
+setwd(file.path(getwd(),'simstudy'))
 
 # Simulate B data sets for each scenario
 source('sim_functions/sim_data_joint_frail.R')

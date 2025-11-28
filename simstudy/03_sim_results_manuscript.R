@@ -6,7 +6,7 @@
 
 # Session -> Set Working Directory -> To Source File Location
 #setwd('/home/spreaficom/jmdf/simstudy')
-file.path(getwd(),'simstudy')
+setwd(file.path(getwd(),'simstudy'))
 
 library(dplyr)
 library(gt)
