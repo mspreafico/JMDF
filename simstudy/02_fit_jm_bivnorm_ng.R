@@ -9,6 +9,9 @@
 # 1. First, modify the value of `setting` in "01_data_generation.R" to 'B' and run it 
 #    to generate data under setting B.
 # 2. Then, modify lines 35-36 in this file to set `setting` to 'B' and run it.
+#
+# When possible, this code runs in parallel using either the number of available 
+# cores minus 2, or up to a maximum of 40 cores.
 ################################################################################
 
 

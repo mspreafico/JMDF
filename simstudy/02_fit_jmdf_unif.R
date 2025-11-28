@@ -16,6 +16,9 @@
 #    to generate data under setting B.
 # 2. Then, modify lines 43-44 in this file to set `setting` to 'B';
 # 3. Select the desired initialization (i or ii) and threshold L (`folder`) and run it.
+#
+# When possible, this code runs in parallel using either the number of available 
+# cores minus 2, or up to a maximum of 20 cores.
 ################################################################################
 
 # Session -> Set Working Directory -> To Source File Location
