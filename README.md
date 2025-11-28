@@ -3,11 +3,12 @@ Code for implementing a Joint Model of recurrent and terminal events with Discre
 
 
 ### Reference
-Masci C, Spreafico M & Ieva F. Joint modelling of recurrent and terminal events with discretely-distributed non-parametric frailty: application on re-hospitalizations and death in heart failure patients. https://arxiv.org/abs/2311.04103
+Masci C, Spreafico M & Ieva F. [Joint modelling of recurrent and terminal events with discretely-distributed non-parametric frailty: application on re-hospitalizations and death in heart failure patients](https://arxiv.org/abs/2311.04103). *arXiv:2311.04103*
 
+This repository also contains the code for conducting a simulation study that is not included in the arXiv preprint.
 
 ### Data Availability
-We cannot provide the original administrative data due to confidentiality.
+We cannot provide the original administrative data analysed in Section 4 due to confidentiality.
 We provide some fake datasets in order to allow researchers who want to replicate the same analysis to properly get how the code has to be run and how results are displayed and should be read.
 
 
@@ -18,17 +19,19 @@ We provide some fake datasets in order to allow researchers who want to replicat
   - **main_Unif.R**: Fit JMdiscfrail with Uniform initialization. Display results.
     
 - Sub-folder **./functions/** contains some auxiliary functions to run the main files:
-  - **JMdiscfrail.R**: Function that implements a joint model of recurrent and terminal events with discretely-distributed non-parametric frailty.
+  - **JMdiscfrail.R**: Function that implements a joint model of recurrent and terminal events with discretely-distributed non-parametric frailty. This file also contains functions for computing (classification) log-likelihood
   - **stratified_baseline_surv.R**: Function that computes th stratified survival probability curves for recurrent and terminal processes from a joint model fitted using JMdiscfrail().
-  - **log_lik_fun.R**: Functions for computing (classification) log-likelihood. Called in "JMdiscfrail.R".
   - **data_format.R**: Function for re-formatting dataset.
+  - **JointFrailtyNg.R**: Function that implements the joint frailty model with bivariate Gaussian random effects by [Ng et al. (2023)](https://doi.org/10.1093/biostatistics/kxab037). This function was taken from https://github.com/RichardTawiah/JointFrailty.
     
 - Sub-folder **./data/** contains fake dataset along with their legends:
 	- **data_legend.txt**: Variables legend of dataset 'fake_dataRD.Rdata'.
 	- **fake_dataRD.Rdata**: Datasets related to 200 fake patients for recurrent (dataR) and terminal (dataD) events (see Appendix A of the *arXiv* reference for further details).
 
+- Sub-folder **./simstudy/** contains the file to reproduce the simulation study. See [README_SIMSTUDY](https://github.com/mspreafico/JMDF/blob/main/simstudy/README_SIMSTUDY.md) for further details.
+  
 ## Software
 - R software.
-- Packages: data.table, MASS, mvtnorm, survival.
+- Packages: data.table, dyplr, gt, MASS, mcprogress, mvtnorm, parallel, survival.
   
-(Last update: December 16th, 2024)
+(Last update: November 28th, 2025)
