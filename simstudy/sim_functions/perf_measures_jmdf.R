@@ -64,6 +64,7 @@ perf.measures.jmdf.all.scenarios <- function(setting, folder, init, scenarios, b
 
 correct.k.boxplots <- function(setting, folder, init, scenarios.K, performances,
                                true.K, Pu, Pv, weights,
+                               fig.name = NULL,
                                colors = c('dodgerblue3','mediumseagreen','orangered','maroon3')){
   
   K.est = performances$K.est
@@ -73,9 +74,12 @@ correct.k.boxplots <- function(setting, folder, init, scenarios.K, performances,
   if (!dir.exists(res.fig)) {
     dir.create(res.fig)
   }
-  init.letter = ifelse(init=='unif','U','G')
-  fig.name = paste0(res.fig,'/fig',setting,'_',init.letter,folder,'.pdf')
-  pdf(fig.name, width = 16, height = 9)
+  if(is.null(fig.name)){
+    init.letter = ifelse(init=='unif','U','G')
+    fig.name = paste0('fig',setting,'_',init.letter,folder,'.pdf')
+  }
+  res.fig.name = paste0(res.fig,'/',fig.name)
+  pdf(res.fig.name, width = 16, height = 9)
   layout(matrix(c(1:(3*length(scenarios.K))), 3, length(scenarios.K), byrow = FALSE), respect = TRUE)
   par(mar = c(5, 5, 1, 1), oma = c(0, 0, 4, 0))  
   
@@ -136,7 +140,7 @@ correct.k.boxplots <- function(setting, folder, init, scenarios.K, performances,
           outer = TRUE, side = 3, line = -1.5, at = (i - 0.4) / 6, cex = 1.2)
   }
   
-  print(paste0('Figure "fig',setting,'_',init.letter,folder,'.pdf" saved in folder ','sim_results_',setting,'/figures'))
+  print(paste0('Figure ', fig.name,' saved in folder ',res.fig))
   
   dev.off()
 }
