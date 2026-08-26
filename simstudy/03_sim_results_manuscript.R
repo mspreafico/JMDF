@@ -26,10 +26,8 @@ gamma.true=c(-0.8, 0.5)
 true.ng.param = matrix(c(0.8,0.8,0.8,
                          0.8,0.8,0.2,
                          0.03,0.02,0.2,
-                         rep(NA,3*6),
-                         1,2,0.8,
-                         NA,NA,NA), nrow=11, ncol=3, byrow=T)
-true.K.masses = c('-','-','-',2,2,3,3,4,3,'-',3)
+                         rep(NA,3*6)), nrow=9, ncol=3, byrow=T)
+true.K.masses = c('-','-','-',2,2,3,3,4,3)
 # True masses
 Pu.true = list(); Pv.true= list(); weights.true = list()
 Pu.true[[4]] = c(-1.2,1.2); Pv.true[[4]] = c(-1,1); weights.true[[4]] = c(0.5,0.5)
@@ -38,12 +36,16 @@ Pu.true[[6]] = c(-1.2,0.68,1.2); Pv.true[[6]] = c(-1,0.29,1.2); weights.true[[6]
 Pu.true[[7]] = c(-1.2,2.2,-0.71); Pv.true[[7]] = c(-1,0.7,0.98); weights.true[[7]] = c(0.45,0.32,0.23)
 Pu.true[[8]] = c(-2,2,-2,2); Pv.true[[8]] = c(-2,-2,2,2); weights.true[[8]] = c(0.25,0.25,0.25,0.25)
 Pu.true[[9]] = c(-1.5,0.75,2.25); Pv.true[[9]] = c(0,0,0); weights.true[[9]] = c(0.4,0.5,0.1)
-Pu.true[[11]] = c(-1,0,1); Pv.true[[11]] = c(-2,0,2); weights.true[[11]] = c(1/3,1/3,1/3)
-
 
 
 # Data setting A 
 setting = 'A'
+
+# Create folder for saving tables
+res.tab = paste0('sim_results_',setting,'/tables')
+if (!dir.exists(res.tab)) {
+  dir.create(res.tab)
+}
 
 # Joinf frailty model by NG et al
 #----------------------------------------------------------------------------
@@ -72,36 +74,58 @@ unif.ii.15 = perf.measures.jmdf.all.scenarios(setting, folder = 'II_L15', init =
 #---------------------------------------------------------------------------
 # Table 2
 gt.tables(tables.ng[tables.ng$scenario %in% 1:3,], title = "Table 2: Ng et al.")
+write.csv2(tables.ng[tables.ng$scenario %in% 1:3,],
+  file = paste0(res.tab,'/table_2_ng.csv'), row.names = FALSE)
+
 gt.tables(gauss.ii.15$perf.coefs[gauss.ii.15$perf.coefs$scenario %in% 1:3,], 
           title = "Table 2: Gaussian (ii), L = 1.5")
+write.csv2(gauss.ii.15$perf.coefs[gauss.ii.15$perf.coefs$scenario %in% 1:3,],
+           file = paste0(res.tab,'/table_2_gauss.csv'), row.names = FALSE)
+
 gt.tables(unif.ii.15$perf.coefs[unif.ii.15$perf.coefs$scenario %in% 1:3,], 
           title = "Table 2: Uniform (ii), L = 1.5")
+write.csv2(unif.ii.15$perf.coefs[unif.ii.15$perf.coefs$scenario %in% 1:3,],
+           file = paste0(res.tab,'/table_2_unif.csv'), row.names = FALSE)
+
 
 # Table 3
 gt.tables(gauss.ii.15$K.est, title = "Table 3: Gaussian (ii), L = 1.5")
-gt.tables(unif.ii.15$K.est, title = "Table 3: Uniform (ii), L = 1.5")
+write.csv2(gauss.ii.15$K.est,
+           file = paste0(res.tab,'/table_3_gauss.csv'), row.names = FALSE)
 
+gt.tables(unif.ii.15$K.est, title = "Table 3: Uniform (ii), L = 1.5")
+write.csv2(unif.ii.15$K.est,
+           file = paste0(res.tab,'/table_3_unif.csv'), row.names = FALSE)
 
 # 5.2.2 Simulation results: last six scenarios
 #---------------------------------------------------------------------------
 # Table 4 
 gt.tables(tables.ng[tables.ng$scenario %in% 4:9,], title = "Table 4: Ng et al.")
-
+write.csv2(tables.ng[tables.ng$scenario %in% 4:9,],
+           file = paste0(res.tab,'/table_4_ng.csv'), row.names = FALSE)
+  
 # Table 5 --> Simulation results: first three scenarios (Section 5.2.2)
 gt.tables(gauss.ii.15$perf.coefs[gauss.ii.15$perf.coefs$scenario %in% 4:9,], 
           title = "Table 5: Gaussian (ii), L = 1.5")
+write.csv2(gauss.ii.15$perf.coefs[gauss.ii.15$perf.coefs$scenario %in% 4:9,],
+           file = paste0(res.tab,'/table_5_gauss.csv'), row.names = FALSE) 
+  
 gt.tables(unif.ii.15$perf.coefs[unif.ii.15$perf.coefs$scenario %in% 4:9,], 
           title = "Table 5: Uniform (ii), L = 1.5")
-
+write.csv2(unif.ii.15$perf.coefs[unif.ii.15$perf.coefs$scenario %in% 4:9,],
+           file = paste0(res.tab,'/table_5_unif.csv'), row.names = FALSE)
+  
 # Figure 8
 correct.k.boxplots(setting, folder = 'II_L15', init = 'gauss', 
                    scenarios.K = 4:9, true.K = true.K.masses,
                    performances = gauss.ii.15,
-                   Pu = Pu.true, Pv = Pv.true, weights = weights.true)
+                   Pu = Pu.true, Pv = Pv.true, weights = weights.true,
+                   fig.name = "figure_8_gauss.pdf")
 # Figure 9
 correct.k.boxplots(setting, folder = 'II_L15', init = 'unif', 
                    scenarios.K = 4:9, true.K = true.K.masses, 
                    performances = unif.ii.15,
-                   Pu = Pu.true, Pv = Pv.true, weights = weights.true)
+                   Pu = Pu.true, Pv = Pv.true, weights = weights.true,
+                   fig.name = "figure_9_unif.pdf")
 
 
