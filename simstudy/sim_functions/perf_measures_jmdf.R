@@ -70,7 +70,7 @@ correct.k.boxplots <- function(setting, folder, init, scenarios.K, performances,
   K.est = performances$K.est
   ord.frail.res = performances$ord.frail.res
   
-  res.fig = paste0('sim_results_',setting,'/figures')
+  res.fig = paste0('figures_',setting)
   if (!dir.exists(res.fig)) {
     dir.create(res.fig)
   }

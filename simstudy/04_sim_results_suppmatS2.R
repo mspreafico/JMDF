@@ -39,15 +39,12 @@ Pu.true[[9]] = c(-1.5,0.75,2.25); Pv.true[[9]] = c(0,0,0); weights.true[[9]] = c
 # Data Setting
 setting = 'B'
 
-# Create folders for saving tables and figures
-res.tab = paste0('sim_results_',setting,'/tables')
+# Create folder for saving tables
+res.tab = paste0('tables_',setting)
 if (!dir.exists(res.tab)) {
   dir.create(res.tab)
 }
-res.fig = paste0('sim_results_',setting,'/figures')
-if (!dir.exists(res.fig)) {
-  dir.create(res.fig)
-}
+
 
 # S2.1 Results from joint model by Ng et al
 #-------------------------------------------------------------------------------

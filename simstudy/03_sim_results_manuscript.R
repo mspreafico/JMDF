@@ -42,7 +42,7 @@ Pu.true[[9]] = c(-1.5,0.75,2.25); Pv.true[[9]] = c(0,0,0); weights.true[[9]] = c
 setting = 'A'
 
 # Create folder for saving tables
-res.tab = paste0('sim_results_',setting,'/tables')
+res.tab = paste0('tables_',setting)
 if (!dir.exists(res.tab)) {
   dir.create(res.tab)
 }
