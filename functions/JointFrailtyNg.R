@@ -11,6 +11,7 @@ joint.frailty.Ng<-function(dat,patient,theta01,theta02,rho0,itmax){
   p<-ncol(dat)-5
   n<-nrow(dat)
   m<-length(unique(patient))
+  var.names <- colnames(dat[,6:(5+p)])
   
   Z<-matrix(0,ncol=m,nrow=n)
   for(j in 1:m){
@@ -244,7 +245,7 @@ joint.frailty.Ng<-function(dat,patient,theta01,theta02,rho0,itmax){
   
   #Beta
   ebeta<-cbind(beta,se.beta,2*(1-pnorm(abs(beta/se.beta))))
-  names(beta)<-c("X1","X2")
+  names(beta)<-var.names
   dimnames(ebeta)<-list(names(beta),c("Estimate","SE","p-value"))
   ebeta<-round(ebeta,3)
   options(digits=3)   
@@ -253,7 +254,7 @@ joint.frailty.Ng<-function(dat,patient,theta01,theta02,rho0,itmax){
   
   #Gamma
   egamma<-cbind(gamma,se.gamma,2*(1-pnorm(abs(gamma/se.gamma))))
-  names(gamma)<-c("X1","X2")
+  names(gamma)<-var.names
   dimnames(egamma)<-list(names(gamma),c("Estimate","SE","p-value"))
   egamma<-round(egamma,3)
   options(digits=3)   

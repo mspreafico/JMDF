@@ -1,0 +1,6 @@
+"Model";"Parameter";"Estimate";"StdDev";"pvalue"
+"Rondeau et al";"sigma2";0,21806880039937;0,0581261595331137;8,78385407534488e-05
+"Rondeau et al";"alpha";6,30493609999702;1,35054414776508;3,03493436371038e-06
+"Ng et al";"theta_u2";0,092;0,01;0
+"Ng et al";"theta_v2";0,133;0,013;0
+"Ng et al";"rho";0,665;0,04;0
