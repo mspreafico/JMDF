@@ -22,51 +22,9 @@ library(mcprogress)
 # Load functions
 source('sim_functions/sim_data_joint_frail.R')
 source('../functions/JointFrailtyNg.R')
+source('sim_functions/run_simulations.R')
 source('sim_functions/extract_sim_results.R')
 
-
-# Function to run simulations under a given setting
-#-----------------------------------------------------------------
-run.simulations.ng <- function(setting){
-  
-  data.dir = paste0('sim_data_',setting)
-  # Create folder
-  res.dir = paste0('sim_results_ng_',setting)
-  if (!dir.exists(res.dir)) {
-    dir.create(res.dir)
-  }
-  
-  # Simulation study for Ng et al.'s model
-  start_time = Sys.time()
-  for(s in 1:9){
-    start_s = Sys.time()
-    print(paste0('Processing Scenario ',s,' - Ng et al Model'))
-    # Load data
-    df.path = paste0(data.dir,'/scenario',s,'.Rdata')
-    load(df.path)
-    # Estimate Ng et al.'s models
-    dat.sim.df <- pmclapply(dat.sim, function(x) dataformat.Ng(x), 
-                            mc.cores = n.cores, mc.preschedule = FALSE) 
-    ng.results <- pmclapply(dat.sim.df , function(x) joint.frailty.Ng(x, patient=x[,2], 
-                                                                      theta01=0.1, theta02=0.1, rho0=0.1, 
-                                                                      itmax=300), 
-                            mc.cores = n.cores, mc.preschedule = FALSE) 
-    sim.results = ng.jm.results(ng.results)
-    # Save
-    res.path = paste0(res.dir,'/s',s,'_JMNg.Rdata')
-    save(sim.results, file = res.path)
-    cat(paste0('Results saved in file: ',res.path))
-    cat('\n')
-    # Processing time
-    end_s = Sys.time()
-    cat('Processing ended after:')
-    print(end_s - start_s)
-    cat('\n')
-  }
-  end_time = Sys.time()
-  cat('Total processing time:')
-  print(end_time-start_time)
-}
 
 # Setting A: yielding approximately 80% death and 20% administrative censoring
 #-----------------------------------------------------------------------------

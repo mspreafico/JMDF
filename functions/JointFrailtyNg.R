@@ -261,7 +261,8 @@ joint.frailty.Ng<-function(dat,patient,theta01,theta02,rho0,itmax){
   
   if(flag==0) stop("not reach the converge")
   
-  return(list('Recurrent' = ebeta, 'Death' = egamma, 'Frailty' = stdvar[(1:3),], 'n.iter' = iteration))
+  return(list('Recurrent' = ebeta, 'Death' = egamma, 'Frailty' = stdvar[(1:3),], 
+              'n.iter' = iteration, 'u' = u, 'v' = v))
 }
 
 
