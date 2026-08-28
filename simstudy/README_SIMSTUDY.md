@@ -3,59 +3,64 @@ Code for implementing the simulation study in Section 5.
 
 ## Description
 - **01_data_generation.R**
-  generates data as described in Manuscript Section 5.1, under setting `A` (yielding approximately 80% death and 20% administrative censoring). Generated data are stored in sub-folder **./sim_data_A/**.
-
-  To generate data under setting B (yielding approximately 50% death and 50% administrative censoring), modify the value of `setting` to `B` (lines 33-34) and run it. Generated data are stored in sub-folder **./sim_data_B/**.
+  generates data as described in Manuscript Section 5.1, under settings `A` (yielding approximately 80% death and 20% administrative censoring) or `B` (yielding approximately 50% death and 50% administrative censoring). Generated data are stored in sub-folders **./sim_data_A/** and **./sim_data_B/**, respectively.
 * * * 
 - **02_fit_jm_bivnorm_ng.R**
-  estimates joint frailty models according to Ng et al. for data/scenarios generated under setting A. Results are stored in sub-folder **./sim_results_ng_A/**.
-  When possible, this code runs in parallel using either the number of available cores minus 2, or up to a maximum of 40 cores (see `n.cores`). See "Execution time" below.
- 
-  To estimate Ng et al.'s models for data generated under setting B:
-  1. First, modify the value of `setting` in *01_data_generation.R* to `B` and run it to generate data under setting B.
-  2. Then, modify lines 35-36 in this file to set `setting` to `B` and run it.
-   
-  Results are stored in sub-folder **./sim_results_ng_B/**.
+  estimates joint frailty models according to Ng et al. for data/scenarios generated under settings `A` or `B`. Results are stored in sub-folders **./sim_results_ng_A/** and **./sim_results_ng_B/**, respectively.
 * * * 
-- **02_fit_jmdf_gauss.R** and **02_fit_jmdf_unif.R**
-  estimate JMDFs using Gaussian and Uniform initialization, respectively, for data/scenarios generated under setting A, initialization (ii) and threshold L = 1.5. Results are stored in sub-folder **./sim_results_A/**.
-  When possible, these codes run in parallel using either the number of available cores minus 2, or up to a maximum of 20 cores (see `n.cores`). See "Execution time" below.
-
-  To select different initialization (i or ii) and threshold L, modify the value of `folder` (lines 62-65: `I_L1`, `II_L1`, `II_L15`, or `II_L2`). 
-  You must run the JMDF files separately for each initialization to get results corresponding to all choices.
-   
-  To estimate JMDFs for data generated under setting B:
-  1. First, modify the value of `setting` in *01_data_generation.R* to `B` and run it to generate data under setting B;
-  2. Then, modify lines 43-44 in this file to set `setting` to `B`;
-  3. Select the desired initialization (i or ii) and threshold L (`folder`) and run it.
-   Results are stored in sub-folder **./sim_results_B/**.
+- **02_fit_jmdf_gauss.R**
+  estimates JMDFs using Gaussian initialization for data/scenarios generated under setting `A` or `B`, initialization `I` or `II` and threshold `L = 1, 1.5, 2`. Results are stored in sub-folders **./sim_results_A/** and **./sim_results_B/**, according to the setting.
+  * * * 
+- **02_fit_jmdf_unif.R**
+  estimate JMDFs using Uniform initialization for data/scenarios generated under setting `A` or `B`, initialization `I` or `II` and threshold `L = 1, 1.5, 2`. Results are stored in sub-folders **./sim_results_A/** and **./sim_results_B/**, according to the setting.
 * * * 
-- **03_sim_results_manuscript.R** reproduces all Tables and Figures in Section 5.2 of the Manuscript.
+- **03_sim_results_manuscript.R** reproduces all Tables and Figures in Section 5.2 of the Manuscript. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the folders **./tables_A/** and **./tables_B/** for the corresponding settings, and **./figures_A/** and **./figures_B/**.
 * * * 
-- **04_sim_results_suppmatS1.R** reproduces all Tables and Figures in Supplementary Material S1.
-   
-  Before running this file, modify the value of `folder` in *02_fit_jmdf_gauss.R* and *02_fit_jmdf_unif.R* to `I_L1`, `II_L1`, and `II_L2`
-  This selects the appropriate initialization (i or ii) and the threshold L. After making this change, run those files to obtain the results using different initializations. You must run the files separately for each initialization to get results  corresponding to all choices.
+- **04_sim_results_suppmatS1.R** reproduces all Tables and Figures in Supplementary Material S1. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_A/**, **./tables_B/**, **./figures_A/**, and **./figures_B/** folders, with filenames matching those used in the Supplementary Material.
 * * * 
-- **04_sim_results_suppmatS2.R** reproduces all Tables and Figures in Supplementary Material S2.
-
-  Before running this file:
-  1. First, modify the value of `setting` in *01_data_generation.R* to `B` and run it to generate data under setting B;
-  2. Then, modify the value of `setting` in *02_fit_jm_bivnorm_ng.R*, *02_fit_jmdf_gauss.R*, and *02_fit_jmdf_unif.R* to `B` and run those files  to obtain the results under setting B.
-     For JMDF, select the desired initialization (i or ii) and the threshold L by modifying the value of `folder` (`I_L1`, `II_L1`, `II_L15`, or `II_L2`). You must run the JMDF files separately for each initialization to get results corresponding to all choices.
+- **04_sim_results_suppmatS2.R** reproduces all Tables and Figures in Supplementary Material S2. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_A/**, **./tables_B/**, **./figures_A/**, and **./figures_B/** folders, with filenames matching those used in the Supplementary Material.
 * * *   
-- Sub-folder **./sim_functions/** contains some auxiliary functions to run the main files of the simulation study.   
-- Sub-folders **./sim_data_*/** contain the generated data.
-- Sub-folders **./sim_results_ng_*/** and **./sim_results_*/** contain the obtained results.
-
+- **05_audit_workflow.R**
+  provides a reduced but fully reproducible audit workflow for spot-checking the
+  simulation results. It reruns the first 5 replications of each of the 9 scenarios
+  under Setting `A` for the JMDF with Gaussian initialization `II`, `L = 1.5`,
+  the JMDF with Uniform initialization `II`, `L = 1.5`, and the joint frailty
+  model by Ng et al. The corresponding intermediate results, including the fitted
+  model objects, are stored in the **./sim_results_A/audit/** and
+  **./sim_results_ng_A/audit/** folders.
+* * *
+- **06_audit_inspection.R**
+  provides an example for inspecting the stored intermediate fitted results for
+  a selected scenario and replication. The script allows users to directly
+  inspect the fitted model components (e.g., fixed effects, baseline cumulative
+  hazards, random effects, and subject subgroup assignments) without rerunning
+  the full simulation study.
+* * *
+- **06_audit_reproducibility_check.R**
+  compares the first 5 audit replications with the corresponding replications
+  from the full simulation results. The script performs the comparison for
+  both the fixed-effect and frailty results of the JMDF models and for the
+  simulation results of the Ng et al. model, across scenarios 1--9. The
+  resulting reproducibility checks are saved as `.csv` files in the respective
+  **./sim_results_A/audit/** and **./sim_results_ng_A/** folders.
+* * *
+- Sub-folders **./figures_A/** and **./figures_B/** contain the simulation result figures generated for settings `A` and `B`, respectively. Figures are saved as `.pdf` files with filenames matching those used in the Manuscript and Supplementary Material.
+- Sub-folders **./sim_data_A/** and **./sim_data_B/** contain the generated data for settings `A` and `B`, respectively.
+- Sub-folder **./sim_functions/** contains auxiliary functions used by the simulation and audit workflows. In particular, **run_simulations.R** contains the functions used to run the Ng et al., Gaussian JMDF, and Uniform JMDF simulation workflows, with the option to run either the full set of replications or a reduced number of replications for the audit workflow.
+- Sub-folders **./sim_results_A/** and **./sim_results_B/** contain the JMDF results obtained with Gaussian and Uniform initializations. In particular, **./sim_results_A/audit/** and **./sim_results_ng_A/audit/** folders contain the reduced intermediate results generated by the audit workflow.
+- Sub-folders **./sim_results_ng_A/** and **./sim_results_ng_B/** contain the results obtained from the Ng et al. model.
+- Sub-folders **./tables_A/** and **./tables_B/** contain the simulation result tables generated for settings `A` and `B`, respectively. Tables are saved as .csv files with filenames matching those used in the Manuscript and Supplementary Material.
 * * * 
 ## Execution time
 
-| File | Model | Setting | Scenarios | Init, L | Execution time | Parallel cores |
-|------|-------|---------| ----------|---------|----------------|----------------|
-| 02_fit_jm_bivnorm_ng.R | JFM by Ng et al. | A | 1-9 | ${\theta_u^2= \theta_v^2}^{(0)}=0.1$, $\rho^{(0)}=0.1$ | 2.06 days | 40 |
-| 02_fit_jmdf_gauss.R | JMDF, Gaussian | A | 1-9 | II, L = 1.5 | 25.05 min | 20 |
-| 02_fit_jmdf_unif.R | JMDF, Unif | A | 1-9 | II, L = 1.5 | 20.55 min | 20 |
+| File | Cohort | Model | Setting | Scenarios | Init, L | Execution time | Parallel cores |
+|------|-------|-------|---------| ----------|---------|----------------|----------------|
+| 02_fit_jm_bivnorm_ng.R | Full | JFM by Ng et al. | A | 1-9 | ${\theta_u^2= \theta_v^2}^{(0)}=0.1$, $\rho^{(0)}=0.1$ | 2.06 days | 40 |
+| 02_fit_jmdf_gauss.R | Full | JMDF, Gaussian | A | 1-9 | II, L = 1.5 | 25.05 min | 20 |
+| 02_fit_jmdf_unif.R | Full | JMDF, Unif | A | 1-9 | II, L = 1.5 | 20.55 min | 20 |
+| 05_audit_workflow.R | Audit | JFM by Ng et al. | A | 1-9 | ${\theta_u^2= \theta_v^2}^{(0)}=0.1$, $\rho^{(0)}=0.1$ | 2.57 hours | 5 |
+| 05_audit_workflow.R | Audit | JMDF, Gaussian | A | 1-9 | II, L = 1.5 | 3.28 min | 5 |
+| 05_audit_workflow.R | Audit | JMDF, Unif | A | 1-9 | II, L = 1.5 | 3.20 min | 5 |
 
 
-(Last update: November 28th, 2025)
+(Last update: August 28th, 2026)
