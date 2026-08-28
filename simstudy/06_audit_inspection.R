@@ -12,7 +12,7 @@ setwd(file.path(getwd(),'simstudy'))
 
 
 # Scenario 1, Replication 1
-scenario = 1
+scenario = 4
 replication = 1
 
 ################################################################################

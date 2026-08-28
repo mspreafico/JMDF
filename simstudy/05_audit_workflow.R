@@ -52,6 +52,6 @@ run.simulations.jmdf.unif(setting = 'A', folder = 'II_L15',
 # Ng et al. Model
 #----------------------------------------------------------------------
 run.simulations.ng(setting = 'A', audit = TRUE, audit.reps = 5)
-# Total processing time on 5 cores: Time difference of 2.484 hours
+# Total processing time on 5 cores: Time difference of 2.572956 hours
 
 
