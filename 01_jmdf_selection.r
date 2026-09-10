@@ -138,18 +138,18 @@ p2
 ##########################
 init = 'unif'
 for(seed in seeds){
-for (L in candidates) {
-  message('Pseudo-data JMDF ',init,', L=',round(L,3))
-  seed_jmdf <- round(seed+L*10)
-  z <- fit_jmdf(init,L, seed_jmdf)
-  #key <- paste(seed,format(L,digits=8),sep='_')
-  #fits_un[[key]] <- z
-  model_selection_un <- rbind(model_selection_un, data.frame(seed=as.factor(seed),L=L,
-                                                       AIC=z$AIC, 
-                                                       LogL = z$LogL,
-                                                       CLogL = z$classLogL,
-                                                       K=z$K))
-}}
+  for (L in candidates) {
+    message('Pseudo-data JMDF ',init,', L=',round(L,3))
+    seed_jmdf <- round(seed+L*10)
+    z <- fit_jmdf(init,L, seed_jmdf)
+    #key <- paste(seed,format(L,digits=8),sep='_')
+    #fits_un[[key]] <- z
+    model_selection_un <- rbind(model_selection_un, data.frame(seed=as.factor(seed),L=L,
+                                                               AIC=z$AIC, 
+                                                               LogL = z$LogL,
+                                                               CLogL = z$classLogL,
+                                                               K=z$K))
+  }}
 
 save(model_selection_un, file = "results/JMDF_model_selection_unif.Rdata")
 
@@ -194,9 +194,9 @@ col2 <- ggplot() + annotate(geom = 'text', x=1, y=1, label="Uniform Initializati
                             angle = 0, size=6, fontface = "bold") + theme_void() 
 
 figure2<- ggarrange(col1, col2,
-          ggarrange(p1, p2, align = "v", ncol=1),
-          ggarrange(p3, p4, align = "v", ncol=1),
-          nrow=2, ncol=2, heights = c(0.06,0.94))
+                    ggarrange(p1, p2, align = "v", ncol=1),
+                    ggarrange(p3, p4, align = "v", ncol=1),
+                    nrow=2, ncol=2, heights = c(0.06,0.94))
 
 # Save Figure 2
 ggsave("results/figures/figure_2.pdf", plot = figure2, width = 10, height = 5)
