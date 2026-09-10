@@ -46,7 +46,7 @@ run.simulations.jmdf.gauss(setting = 'A', folder = 'II_L15',
 #----------------------------------------------------------------------
 run.simulations.jmdf.unif(setting = 'A', folder = 'II_L15', 
                           audit = TRUE, audit.reps = 5)
-# Total processing time on 5 cores: Time difference of 3.202 mins
+# Total processing time on 5 cores: Time difference of 2.58 mins
 
 
 # Ng et al. Model

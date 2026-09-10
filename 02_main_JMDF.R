@@ -13,9 +13,6 @@
 ## clear workspace
 rm(list=ls())
 
-## set working directory
-setwd("~/github/JMDF")
-
 ## load data
 library(data.table)
 load("data/fake_dataRD.Rdata")

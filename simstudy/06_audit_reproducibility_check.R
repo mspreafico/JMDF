@@ -17,7 +17,20 @@ setwd(file.path(getwd(),'simstudy'))
 
 # JMDF: compare audit and full-workflow results for a given setting,
 # initialization/threshold combination, and estimation method.
-audit.checks.jmdf <- function(setting, folder, method) {
+audit.checks.jmdf <- function(setting, folder, method, 
+                              tol = 1e-8, save.check = TRUE) {
+  
+  # The reproducibility check uses a user-defined numerical tolerance because
+  # both Gaussian and Uniform initialization rely on an iterative EM algorithm.
+  # The initialization also includes a stochastic assignment of observations to
+  # the initial frailty support points. Small numerical differences can therefore
+  # lead to slightly different convergence paths. For the Uniform initialization,
+  # such differences may additionally affect the discrete support-reduction step
+  # and, in some cases, the selected number of frailty groups. The default
+  # tolerance is deliberately strict; larger tolerances can be specified to
+  # assess agreement in the numerical estimates. 
+  # The number of frailty groups (K) is checked separately and exactly, 
+  # and any difference in K is reported explicitly.
   
   # Check that method is valid
   if (!method %in% c("gauss", "unif")) {
@@ -30,8 +43,8 @@ audit.checks.jmdf <- function(setting, folder, method) {
     lapply(1:9, function(scenario) {
       
       # Load audit results
-      audit.path = paste0("sim_results_",setting,"/audit/s",scenario,"_JMDF_gauss",
-                          folder,".Rdata")
+      audit.path = paste0("sim_results_",setting,"/audit/s",scenario,"_JMDF_",
+                          method, folder,".Rdata")
       load(audit.path)
       coef.results.audit <- coef.results
       frail.results.audit <- frail.results
@@ -39,7 +52,7 @@ audit.checks.jmdf <- function(setting, folder, method) {
       
       # Load complete results
       complete.path = paste0("sim_results_", setting, "/",folder, "/s",scenario,
-                             "_JMDF_gauss", folder,".Rdata")
+                             "_JMDF_", method, folder,".Rdata")
       load(complete.path)
       coef.results.complete <- coef.results
       frail.results.complete <- frail.results
@@ -47,43 +60,92 @@ audit.checks.jmdf <- function(setting, folder, method) {
       # Compare the audit results with the corresponding first `audit.reps`
       # replications from the full simulation results
       audit.reps = nrow(coef.results.audit)
+      # Model estimates and standard errors to be compared
+      coef.vars = c("beta1", "beta2","gamma1", "gamma2",
+                    "se_beta1", "se_beta2","se_gamma1", "se_gamma2")
+      
       data.frame(
         scenario = scenario,
         replication = 1:audit.reps,
         
+        # Compare coefficient estimates and SEs
+        # excluding K, AIC, n.iter from the comparison
         coef.results = sapply(
           1:audit.reps,
           function(i)
             isTRUE(all.equal(
-              coef.results.audit[i, , drop = FALSE],
-              coef.results.complete[i, , drop = FALSE]
+              coef.results.audit[i, coef.vars, drop = FALSE],
+              coef.results.complete[i, coef.vars, drop = FALSE],
+              tolerance = tol
             ))
         ),
         
+        # Compare the number of frailty groups
+        K = sapply(
+          1:audit.reps,
+          function(i) {
+            coef.results.audit$K[i] ==
+              coef.results.complete$K[i]
+          }
+        ),
+        
+        # Report the difference in the number of frailty groups
+        K_difference = sapply(
+          1:audit.reps,
+          function(i) {
+            coef.results.audit$K[i] -
+              coef.results.complete$K[i]
+          }
+        ),
+        
+        # Compare frailty estimates only when K is the same
         frail.results = sapply(
           1:audit.reps,
-          function(i)
-            isTRUE(all.equal(
-              frail.results.audit[i, , drop = FALSE],
-              frail.results.complete[i, , drop = FALSE]
-            ))
+          function(i) {
+            
+            K.audit <- coef.results.audit$K[i]
+            K.complete <- coef.results.complete$K[i]
+            
+            if (K.audit != K.complete) {
+              return("Not comparable")
+            }
+            
+            # Fix label switching
+            audit_i <- frail.results.audit[frail.results.audit$rep_b == i, , drop = FALSE]
+            complete_i <- frail.results.complete[frail.results.complete$rep_b == i, , drop = FALSE]
+            
+            # Order groups by Pu
+            audit_i <- audit_i[order(audit_i$Pu), , drop = FALSE]
+            complete_i <- complete_i[order(complete_i$Pu), , drop = FALSE]
+            
+            # Remove group labels and rownames because they are arbitrary
+            audit_i$group <- NULL
+            complete_i$group <- NULL
+            
+            rownames(audit_i) <- NULL
+            rownames(complete_i) <- NULL
+            
+            isTRUE(all.equal(audit_i, complete_i, tolerance = tol))
+          }
         )
       )
     })
   )
   
-  # Save check results
-  res.path = paste0("sim_results_",setting,"/audit/reproducibility_check_",method,
-                    "_",setting,"_", folder, ".csv")
-  write.csv2(audit.checks, file = res.path, row.names = FALSE)
-  cat(paste0('results saved in file: ',res.path))
-  cat('\n')
+  if(save.check){
+    # Save check results
+    res.path = paste0("sim_results_",setting,"/audit/reproducibility_check_",method,
+                      "_",setting,"_", folder, ".csv")
+    write.csv2(audit.checks, file = res.path, row.names = FALSE)
+    cat(paste0('results saved in file: ',res.path))
+    cat('\n')
+  }
   
   return(audit.checks)
 }
 
 # Ng et al.: compare audit and full-workflow simulation results for a given setting
-audit.checks.ng <- function(setting) {
+audit.checks.ng <- function(setting, tol = 10e-8, save.check = TRUE) {
   
   audit.checks <- do.call(
     rbind,
@@ -111,18 +173,21 @@ audit.checks.ng <- function(setting) {
           function(i)
             isTRUE(all.equal(
               sim.results.audit[i, , drop = FALSE],
-              sim.results.complete[i, , drop = FALSE]
+              sim.results.complete[i, , drop = FALSE],
+              tolerance = tol
             ))
         )
       )
     })
   )
   
-  # Save check results
-  res.path = paste0("sim_results_ng_",setting,"/audit/reproducibility_check_ng_",setting,".csv")
-  write.csv2(audit.checks, file = res.path, row.names = FALSE)
-  cat(paste0('results saved in file: ',res.path))
-  cat('\n')
+  if(save.check){
+    # Save check results
+    res.path = paste0("sim_results_ng_",setting,"/audit/reproducibility_check_ng_",setting,".csv")
+    write.csv2(audit.checks, file = res.path, row.names = FALSE)
+    cat(paste0('results saved in file: ',res.path))
+    cat('\n')
+  }
   
   return(audit.checks)
 }
@@ -137,19 +202,58 @@ audit.checks.ng <- function(setting) {
 # for the Ng et al. model.
 ################################################################################
 
+# The Gaussian and Uniform initialization methods both rely on an iterative
+# EM algorithm. The initialization also includes a stochastic assignment of
+# observations to the initial frailty support points (line 157 of
+# JMdiscfrail.R). Consequently, small numerical differences between runs or
+# computational environments may lead to slightly different initial
+# configurations and convergence paths. For the Uniform initialization, such
+# differences may additionally affect the discrete support-reduction step and
+# therefore the selected number of frailty groups.
+#
+# We therefore evaluate reproducibility using different numerical tolerances.
+# Strict tolerances assess near-exact numerical agreement, whereas larger
+# tolerances assess whether the results agree within a small numerical
+# difference. Some comparisons may remain FALSE because the two runs can
+# follow slightly different numerical paths, even when the resulting
+# parameter estimates are very similar.
+#
+# The number of frailty groups (K) is checked separately and exactly, since
+# a difference in K represents a difference in the selected support rather
+# than a simple numerical discrepancy. The K_difference column reports the
+# difference between the number of groups obtained in the audit and in the
+# corresponding full-workflow result: a value of 0 indicates identical K,
+# whereas a negative or positive value indicates fewer or more groups,
+# respectively, in the audit result.
+
+
 # JMDF Gaussian initialization (ii) with L = 1.5
 #----------------------------------------------------------------------
+# Strict tolerance
 rep_checks_gauss = audit.checks.jmdf(setting = "A", folder = "II_L15",
-                                     method = "gauss")
+                                     method = "gauss", tol=1e-8, save.check=T)
 print(rep_checks_gauss)
+
 
 # JMDF Uniform initialization (ii) with L = 1.5
 #----------------------------------------------------------------------
+# Strict tolerance
 rep_checks_unif = audit.checks.jmdf(setting = "A", folder = "II_L15",
-                                    method = "unif")
+                                    method = "unif", tol=1e-8, save.check=F)
 print(rep_checks_unif)
+
+# Intermediate tolerance
+rep_checks_unif = audit.checks.jmdf(setting = "A", folder = "II_L15",
+                                    method = "unif", tol=1e-3, save.check=F)
+print(rep_checks_unif)
+
+# Larger tolerance
+rep_checks_unif = audit.checks.jmdf(setting = "A", folder = "II_L15",
+                                    method = "unif", tol=1e-2, save.check=T)
+print(rep_checks_unif)
+
 
 # Ng et al. Model
 #----------------------------------------------------------------------
-rep_checks_ng = audit.checks.ng(setting = "A")
+rep_checks_ng = audit.checks.ng(setting = "A", tol=1e-8, save.check=T)
 print(rep_checks_ng)

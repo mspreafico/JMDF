@@ -17,9 +17,6 @@
 ## clear workspace
 rm(list=ls())
 
-## set working directory
-setwd("~/github/JMDF")
-
 ## load packages
 library(ggplot2)
 library(ggpubr)

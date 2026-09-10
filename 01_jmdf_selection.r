@@ -22,9 +22,6 @@ library(ggpubr)
 library(RColorBrewer)
 library(data.table)
 
-## set working directory
-setwd("~/github/JMDF")
-
 ## load data
 load("data/fake_dataRD.Rdata")
 # The example dataset contains recurrent-event and terminal-event data.

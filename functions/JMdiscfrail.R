@@ -154,7 +154,7 @@ JMdiscfrail = function(dataR, formulaR, dataD, formulaD,
   }
   
   # Assign patient to random frailty, built frailty vectors
-  P_index <- sample(1:K,size=N,replace = T, prob = w)
+  P_index <- sample(1:K, size=N, replace = T, prob = w)
   P_off1  <- P_show[,1][P_index[groups1]]
   P_off2  <- P_show[,2][P_index[groups2]]
   
