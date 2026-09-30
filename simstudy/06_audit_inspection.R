@@ -4,6 +4,8 @@
 # Inspect the fitted model objects for a selected scenario and replication.
 # This script provides an example of how individual intermediate simulation
 # results can be loaded and inspected directly.
+#
+# Warning: Run file 05_audit_workflow.R first to save your own fitted objects.
 ################################################################################
 
 # Session -> Set Working Directory -> To Source File Location

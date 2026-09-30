@@ -5,8 +5,8 @@
 # reproducibility checks. For each method, the first five replications of each
 # of the nine scenarios are fitted and saved in the corresponding audit folder.
 #
-# The resulting files are compared with the corresponding results from the
-# full simulation workflow using 06_audit_reproducibility_check.R.
+# The resulting files are compared with the corresponding results obtained
+# by the authors using 06_audit_reproducibility_check.R.
 ################################################################################
 
 # Session -> Set Working Directory -> To Source File Location
@@ -39,14 +39,14 @@ library(mcprogress)
 #----------------------------------------------------------------------
 run.simulations.jmdf.gauss(setting = 'A', folder = 'II_L15', 
                            audit = TRUE, audit.reps = 5)
-# Total processing time on 5 cores: Time difference of 3.283 mins
+# Total processing time on 5 cores: Time difference of 1.25 mins
 
 
 # JMDF Uniform initialization (ii) with L = 1.5
 #----------------------------------------------------------------------
 run.simulations.jmdf.unif(setting = 'A', folder = 'II_L15', 
                           audit = TRUE, audit.reps = 5)
-# Total processing time on 5 cores: Time difference of 2.58 mins
+# Total processing time on 5 cores: Time difference of 2.01 mins
 
 
 # Ng et al. Model
