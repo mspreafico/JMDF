@@ -23,7 +23,7 @@ These analyses use the pseudo-data example (`./data/fake_dataRD.Rdata`) and are 
 
 - Sub-folder **./data/** contains the pseudo-data dataset and its variable legend:
 	- **data_legend.txt**: Variables legend of dataset 'fake_dataRD.Rdata'.
-	- **fake_dataRD.Rdata**: Datasets related to 300 fake patients for recurrent (dataR) and terminal (dataD) events (see Appendix A of the *arXiv* reference for further details).
+	- **fake_dataRD.Rdata**: Datasets related to 500 fake patients for recurrent (dataR) and terminal (dataD) events (see Appendix A of the *arXiv* reference for further details).
 
 - Sub-folder **./functions/** contains auxiliary functions used by the main scripts:
   - **JMdiscfrail.R**: Function implementing a joint model of recurrent and terminal events with discretely-distributed non-parametric frailty. This file also contains functions for computing (classification) log-likelihood.
