@@ -44,6 +44,9 @@ audit.checks.jmdf <- function(setting, folder, method,
       # Load audit results
       audit.path = paste0("sim_results_",setting,"/audit/s",scenario,"_JMDF_",
                           method, folder,".Rdata")
+      if (!file.exists(audit.path)) {
+        stop("Audit results not found. Please run '05_audit_workflow.R' first.")
+      }
       load(audit.path)
       coef.results.audit <- coef.results
       frail.results.audit <- frail.results
@@ -152,6 +155,9 @@ audit.checks.ng <- function(setting, tol = 10e-8, save.check = TRUE) {
       
       # Load audit results
       audit.path = paste0("sim_results_ng_",setting,"/audit/s",scenario,"_JMNg.Rdata")
+      if (!file.exists(audit.path)) {
+        stop("Audit results not found. Please run '05_audit_workflow.R' first.")
+      }
       load(audit.path)
       sim.results.audit <- sim.results
       

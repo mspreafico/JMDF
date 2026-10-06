@@ -17,13 +17,19 @@ setwd(file.path(getwd(),'simstudy'))
 scenario = 4
 replication = 1
 
+
 ################################################################################
 # Direct comparison with the corresponding full simulation result
 ################################################################################
 
 # JMDF with Gaussian initialization (ii), L = 1.5
 #------------------------------------------------------------------------------
-load(paste0("sim_results_A/audit/s", scenario,"_JMDF_gaussII_L15.Rdata"))
+audit.path.gauss = paste0("sim_results_A/audit/s", scenario,"_JMDF_gaussII_L15.Rdata")
+if (file.exists(audit.path.gauss)){
+  load(audit.path.gauss)
+}else{
+  stop("Gaussian audit results not found. Please run '05_audit_workflow.R' first.")
+}
 gauss.fit = jmdf.results[[replication]]
 
 # Fixed effects - Recurrent (betas)
@@ -46,7 +52,12 @@ table(gauss.fit$id.subgroup$subgroup)
 
 # JMDF with Uniform initialization (ii), L = 1.5
 #------------------------------------------------------------------------------
-load(paste0("sim_results_A/audit/s", scenario,"_JMDF_unifII_L15.Rdata"))
+audit.path.unif = paste0("sim_results_A/audit/s", scenario,"_JMDF_unifII_L15.Rdata")
+if(file.exists(audit.path.unif)){
+  load(audit.path.unif)
+}else{
+  stop("Uniform audit results not found. Please run '05_audit_workflow.R' first.")
+}
 unif.fit = jmdf.results[[replication]]
 
 # Fixed effects - Recurrent (betas)
@@ -69,7 +80,12 @@ table(unif.fit$id.subgroup$subgroup)
 
 # Ng et al. Model
 #----------------------------------------------------------------------
-load(paste0("sim_results_ng_A/audit/s", scenario,"_JMNg.Rdata"))
+audit.path.ng = paste0("sim_results_ng_A/audit/s", scenario,"_JMNg.Rdata")
+if (file.exists(audit.path.ng)){
+  load(audit.path.ng)
+}else{
+  stop("Ng et al. audit results not found. Please run '05_audit_workflow.R' first.")
+}
 ng.fit = ng.results[[replication]]
 
 ng.fit

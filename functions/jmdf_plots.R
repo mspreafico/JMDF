@@ -4,7 +4,14 @@ library(data.table)
 
 source('functions/stratified_base_surv.R')
 
-create.data.masses <- function(gauss3, gauss2, unif3, unif2){
+create.data.masses <- function(gauss3, gauss2, unif3, unif2,
+                               col.g3 = NULL, col.g2 = NULL, 
+                               col.u3 = NULL, col.u2 = NULL){
+  
+  if(is.null(col.g3)){col.g3 = order(gauss3$P[,1])}
+  if(is.null(col.u3)){col.u3 = order(unif3$P[,1])}
+  if(is.null(col.g2)){col.g2 = order(gauss2$P[,1])}
+  if(is.null(col.u2)){col.u2 = order(unif2$P[,1])}
   
   data_masses = data.table(rbind.data.frame(cbind.data.frame('init' = rep('Gauss',3),
                                                              'K' = rep(3,3),
@@ -12,28 +19,32 @@ create.data.masses <- function(gauss3, gauss2, unif3, unif2){
                                                              'v' = gauss3$P[,2],
                                                              'w' = gauss3$w,
                                                              'SE_u' = gauss3$se.P[,1],
-                                                             'SE_v' = gauss3$se.P[,2]),
+                                                             'SE_v' = gauss3$se.P[,2],
+                                                             'color' = col.g3),
                                             cbind.data.frame('init' = rep('Gauss',2),
                                                              'K' = rep(2,2),
                                                              'u' = gauss2$P[,1],
                                                              'v' = gauss2$P[,2],
                                                              'w' = gauss2$w,
                                                              'SE_u' = gauss2$se.P[,1],
-                                                             'SE_v' = gauss2$se.P[,2]),
+                                                             'SE_v' = gauss2$se.P[,2],
+                                                             'color' = col.g2),
                                             cbind.data.frame('init' = rep('Unif',3),
                                                              'K' = rep(3,3),
                                                              'u' = unif3$P[,1],
                                                              'v' = unif3$P[,2],
                                                              'w' = unif3$w,
                                                              'SE_u' = unif3$se.P[,1],
-                                                             'SE_v' = unif3$se.P[,2]),
+                                                             'SE_v' = unif3$se.P[,2],
+                                                             'color' = col.u3),
                                             cbind.data.frame('init' = rep('Unif',2),
                                                              'K' = rep(2,2),
                                                              'u' = unif2$P[,1],
                                                              'v' = unif2$P[,2],
                                                              'w' = unif2$w,
                                                              'SE_u' = unif2$se.P[,1],
-                                                             'SE_v' = unif2$se.P[,2])
+                                                             'SE_v' = unif2$se.P[,2],
+                                                             'color' = col.u2)
   ))
   setorder(data_masses, init, -K, u) 
   
@@ -59,7 +70,7 @@ plot.masses <- function(result, colors=NULL){
   abline(v=0, lty=2)
   legend(0.1,-0.1, col=colors, 
          pch = rep(16,result$K), y.intersp=1,
-         legend = paste0('P',seq(1,result$K),': ',masses,' - w',seq(1,result$K),': ',round(result$w,3)))
+         legend = paste0('P',order(result$P[,1]),': ',masses,' - w',order(result$P[,1]),': ',round(result$w,3)))
   
   recordPlot()
 }
@@ -67,23 +78,18 @@ plot.masses <- function(result, colors=NULL){
 #----------#
 # Figure 3 #
 #----------#
-figure.masses.combined <- function(gauss3, gauss2, unif3, unif2){
+figure.masses.combined <- function(gauss3, gauss2, unif3, unif2,
+                                   col.g3 = NULL, col.g2 = NULL,
+                                   col.u3 = NULL, col.u2 = NULL){
   
-  data_masses = create.data.masses(gauss3, gauss2, unif3, unif2)
+  data_masses = create.data.masses(gauss3, gauss2, unif3, unif2,
+                                   col.g3, col.g2, col.u3, col.u2)
   data_masses$shape = ifelse(data_masses$K==2,23,21)
   data_masses$id = c(1:10)
   data_masses[, coordinates := paste0('(',sprintf("%.3f", round(u,3)),', ',
                                       sprintf("%.3f", round(v,3)),')')]
-  blue1 = '#3399FF'
-  blue2 = '#0066CC'
-  or1 = '#CC3300'
-  or2 = '#FF6600'
-  or3 = '#FF9933'
-  pi1 = '#CC0066'
-  pi2 = '#FF33CC'
-  pi3 = '#FF6699'
-  colori = c(or3,or2,or1,blue2,blue1,pi3,pi2,pi1,blue2,blue1)
   
+  colori = as.vector(data_masses$color)
   labels_names = paste0("P",c(1:3,1:2,1:3,1:2),": ",round(data_masses$w,3))
   
   p1=ggplot(data_masses[init=='Gauss'], aes(x=u, y=v, 
@@ -118,7 +124,7 @@ figure.masses.combined <- function(gauss3, gauss2, unif3, unif2){
     geom_vline(xintercept = 0.0, linetype='dotted', color='gray20') +
     geom_hline(yintercept = 0.0, linetype='dotted', color='gray20') +
     geom_point(aes(size=w), stroke = 2) +
-    geom_text(hjust=c(-0.1,1.1,1.1,-0.15,1.1), size=3.5, show.legend = FALSE) +
+    geom_text(hjust=c(-0.1,-0.1,-0.1,-0.15,1.1), size=3.5, show.legend = FALSE) +
     scale_fill_manual(name = "Masses & Weights", values = colori[6:10],
                       labels = labels_names[6:10]) +
     scale_color_manual(name = "Masses & Weights", values = colori[6:10],
@@ -189,7 +195,7 @@ frailty.comparisons <- function(result.rondeau, result.ng, result, colors=NULL){
   
   par(mfrow=c(1,2))
   boxplot(exp(result.rondeau$frailty.pred) ~ result$id.subgroups$subgroup,
-          col=colors[result$id.subgroups$subgroup],
+          col=colors,
           xlab = "Mass-point", ylab = expression("Frailty term exp"(eta[i])),
           main = 'Frailty estimates by Rondeau and others')
   legend("topright", legend = paste0("P", 1:length(colors)),

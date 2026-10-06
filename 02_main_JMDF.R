@@ -37,14 +37,14 @@ dataD = formatting.data(dataD)
 SigmaG =  matrix(c(2*0.12,0.0,0.0,2*1.4),nrow = 2, ncol = 2)
 muG = c(0,0)
 
-# L = 1
+# L = 1.25
 gauss3 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      dataD, formulaD = '~ sex + age + ncom + adherent',
                      init.unif = FALSE,
                      distance = "euclidean",
                      Sigma = SigmaG,
                      mu = muG,
-                     M = 1000, L = 1,
+                     M = 1000, L = 1.25,
                      max.it = 10,  toll = 1e-3)
 
 # Fixed effects - Recurrent (betas)
@@ -53,9 +53,10 @@ gauss3$modelR
 gauss3$modelD
 # Mass points
 gauss3$K
-print(plot.masses(gauss3, colors=c('#CC3300','#FF6600','#FF9933')))
+col_gauss3 = c('#FF9933','#FF6600','#CC3300')[order(gauss3$P[,1])]
+print(plot.masses(gauss3, colors = col_gauss3))
 # Frailty-stratified baseline survival curves
-print(figure.survival.curves(gauss3, colors=c('#CC3300','#FF6600','#FF9933')))
+print(figure.survival.curves(gauss3, colors = col_gauss3))
 
 # L = 2
 gauss2 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
@@ -72,9 +73,10 @@ gauss2$modelR
 gauss2$modelD
 # Mass points
 gauss2$K
-print(plot.masses(gauss2, colors=c('#3399FF','#0066CC')))
+col_gauss2 = c('#0066CC','#3399FF')[order(gauss2$P[,1])]
+print(plot.masses(gauss2, colors = col_gauss2))
 # Frailty-stratified baseline survival curves
-print(figure.survival.curves(gauss2, colors=c('#3399FF','#0066CC')))
+print(figure.survival.curves(gauss2, colors = col_gauss2))
 
 
 ##########################
@@ -88,14 +90,14 @@ mu = c(0,0)
 ulim = c(mu[1]-6*sqrt(Sigma[1,1]), mu[1]+6*sqrt(Sigma[1,1]))
 vlim = c(mu[2]-6*sqrt(Sigma[2,2]), mu[2]+6*sqrt(Sigma[2,2]))
 
-# L = 1.5
+# L = 1.25
 unif3 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      dataD, formulaD = '~ sex + age + ncom + adherent',
                      init.unif = TRUE,
                      distance = "euclidean",
                      ulim.unif = ulim,
                      vlim.unif = vlim,
-                     M = 1000, L = 1.5,
+                     M = 1000, L = 1.25,
                      max.it = 10,  toll = 1e-3)
 # Fixed effects - Recurrent (betas)
 unif3$modelR
@@ -103,10 +105,10 @@ unif3$modelR
 unif3$modelD
 # Mass points
 unif3$K
-print(plot.masses(unif3, colors=c('#FF6699','#FF33CC','#CC0066')))
-# --> Mass point P3 is not visible is its weight is very small
+col_unif3 = c('#FF6699','#FF33CC','#CC0066')[order(unif3$P[,1])]
+print(plot.masses(unif3, colors = col_unif3))
 # Frailty-stratified baseline survival curves
-print(figure.survival.curves(unif3, colors=c('#FF6699','#FF33CC','#CC0066')))
+print(figure.survival.curves(unif3, colors = col_unif3))
 
 # L = 2
 unif2 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
@@ -123,9 +125,10 @@ unif2$modelR
 unif2$modelD
 # Mass points
 unif2$K
-print(plot.masses(unif2, colors=c('#0066CC','#3399FF')))
+col_unif2 = c('#0066CC','#3399FF')[order(unif2$P[,1])]
+print(plot.masses(unif2, colors = col_unif2))
 # Frailty-stratified baseline survival curves
-print(figure.survival.curves(unif2, colors=c('#0066CC','#3399FF')))
+print(figure.survival.curves(unif2, colors = col_unif2))
 
 
 # Save fitted model objects for reproducibility and subsequent analyses
@@ -149,7 +152,11 @@ write.csv2(appendixB, "results/tables/table_7.csv", row.names = FALSE)
 #----------#
 # Figure 3 #
 #----------#
-figure3 = figure.masses.combined(gauss3, gauss2, unif3, unif2)
+figure3 = figure.masses.combined(gauss3, gauss2, unif3, unif2,
+                                 col.g3 = col_gauss3, 
+                                 col.g2 = col_gauss2,
+                                 col.u3 = col_unif3, 
+                                 col.u2 = col_unif2)
 ggsave("results/figures/figure_3.pdf", plot = figure3, width = 10, height = 5)
 
 
@@ -157,11 +164,11 @@ ggsave("results/figures/figure_3.pdf", plot = figure3, width = 10, height = 5)
 # Figure 4 #
 #----------#
 pdf("results/figures/figure_4_unif.pdf", width = 12, height = 5)
-figure.survival.curves(unif3, colors=c('#CC0066', '#FF33CC', '#FF6699'))
+figure.survival.curves(unif3, colors = col_unif3)
 dev.off()
 
 pdf("results/figures/figure_4_gauss.pdf", width = 12, height = 5)
-figure.survival.curves(gauss3, colors=c('#CC3300','#FF6600','#FF9933'))
+figure.survival.curves(gauss3, colors = col_gauss3)
 dev.off()
 
 
