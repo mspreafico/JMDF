@@ -100,7 +100,7 @@ dat.ng = formatting.data.ng(dat.ng)
 dat.ng = as.matrix(dat.ng)
 
 jm.ng = joint.frailty.Ng(dat.ng, patient=dat.ng[,2], 
-                         theta01=0.2, theta02=0.2, rho0=0.5, itmax=15)
+                         theta01=0.1, theta02=0.1, rho0=0.5, itmax=15)
 
 # Fixed effects - Recurrent (betas)
 jm.ng$Recurrent
