@@ -105,12 +105,14 @@ abline(v=0, lty=2)
 
 
 # Save fitted model objects for reproducibility and subsequent analyses
-if (!anyNA(jm.rondeau$frailty.pred)) {
+if (exists("jm.rondeau")) {
   save(jm.rondeau, jm.ng, file = "results/JM_parametric.Rdata")
 } else {
-  warning("Convergence problem with frailtyPenal(). Results are not saved. 
-          Please load the correct files from the results folder to reproduce the following table and figure.
-          Use load('results/JM_parametric.Rdata')")
+  stop("Convergence problem with frailtyPenal(). 
+       Results are not saved and existing output files are not overwritten.
+       Please load the provided files from the results folder to reproduce 
+       the following table and figure.
+       Use load('results/JM_parametric.Rdata')")
 }
 
 #-----------------------------------------------------------------------
