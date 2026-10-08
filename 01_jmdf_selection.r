@@ -36,7 +36,7 @@ dataR = formatting.data(dataR)
 dataD = formatting.data(dataD)
 
 # Auxiliary function for running JMDF with different L and initializations 
-fit_jmdf <- function(init, L,seed_jmdf) {
+fit_jmdf <- function(init, L, seed_jmdf) {
   if (init == 'gauss') {
     SigmaG <- matrix(c(2*.12,0,0,2*1.4),2,2)
     muG = c(0,0)
@@ -76,9 +76,6 @@ candidates <- seq(0.1,3.0,by=.1)
 colgauss = c(brewer.pal(9, name="PuBu")[6:9],brewer.pal(9, name="YlGn")[-1])
 colunif = c(brewer.pal(9, name="PuBuGn")[6:9],brewer.pal(9, name="YlGnBu")[-1])
 
-
-#fits_un <- list() 
-#fits_gauss <- list()
 model_selection_un <- data.frame()
 model_selection_gauss <- data.frame()
 
@@ -90,9 +87,7 @@ for(seed in seeds){
   for (L in candidates) {
     message('Pseudo-data JMDF ',init,', L=',round(L,3))
     seed_jmdf <- round(seed+L*10)
-    z <- fit_jmdf(init,L, seed_jmdf)
-    #key <- paste(seed,format(L,digits=8),sep='_')
-    #fits_gauss[[key]] <- z
+    z <- fit_jmdf(init, L, seed_jmdf)
     model_selection_gauss <- rbind(model_selection_gauss, data.frame(seed=as.factor(seed),L=L,
                                                                      AIC=z$AIC, 
                                                                      LogL = z$LogL,
@@ -102,12 +97,12 @@ for(seed in seeds){
 
 save(model_selection_gauss, file = "results/JMDF_model_selection_gauss.Rdata")
 
-# load(results/JMDF_model_selection_gauss.Rdata)
-p1 <- ggplot(model_selection_gauss, aes(x=L, y=AIC, color=seed)) +  geom_line()+
+# load("results/JMDF_model_selection_gauss.Rdata")
+p1 <- ggplot(model_selection_gauss, aes(x=L, y=AIC, color=seed)) + geom_line() +
   labs(title = "AIC vs Distance L across runs",
        x = "Distance L",
        y = "AIC") +
-  scale_y_continuous(limits = c(18600,19400)) +
+  scale_y_continuous(limits = c(28800,30100)) +
   scale_colour_manual(values = colgauss) +
   theme_light() +
   theme(legend.position='none', 
@@ -115,11 +110,11 @@ p1 <- ggplot(model_selection_gauss, aes(x=L, y=AIC, color=seed)) +  geom_line()+
         axis.title=element_text(size=rel(1.2)),
         plot.title = element_text(face="bold", size=rel(1.3)), 
         legend.title = element_text(size=rel(1.2)), legend.text = element_text(size=rel(1.2)))
-
 p1
+
 p2 <- ggplot(model_selection_gauss, aes(x=L, y=K, color=seed))+
   geom_line()+
-  scale_y_continuous(limits = c(1,17), breaks=seq(1,17,2)) +
+  scale_y_continuous(limits = c(1,15), breaks=seq(1,15,2)) +
   scale_colour_manual(values = colgauss) +
   labs(title = "Number of masses vs Distance L across runs",
        x = "Distance L",
@@ -130,7 +125,6 @@ p2 <- ggplot(model_selection_gauss, aes(x=L, y=K, color=seed))+
         axis.title=element_text(size=rel(1.2)),
         plot.title = element_text(face="bold", size=rel(1.3)), 
         legend.title = element_text(size=rel(1.2)), legend.text = element_text(size=rel(1.2)))
-
 p2
 
 ##########################
@@ -141,9 +135,7 @@ for(seed in seeds){
   for (L in candidates) {
     message('Pseudo-data JMDF ',init,', L=',round(L,3))
     seed_jmdf <- round(seed+L*10)
-    z <- fit_jmdf(init,L, seed_jmdf)
-    #key <- paste(seed,format(L,digits=8),sep='_')
-    #fits_un[[key]] <- z
+    z <- fit_jmdf(init, L, seed_jmdf)
     model_selection_un <- rbind(model_selection_un, data.frame(seed=as.factor(seed),L=L,
                                                                AIC=z$AIC, 
                                                                LogL = z$LogL,
@@ -153,13 +145,12 @@ for(seed in seeds){
 
 save(model_selection_un, file = "results/JMDF_model_selection_unif.Rdata")
 
-#load("results/JMDF_model_selection_unif.Rdata")
-
-p3 <- ggplot(model_selection_un, aes(x=L, y=AIC, color=seed)) +  geom_line()+
+# load("results/JMDF_model_selection_unif.Rdata")
+p3 <- ggplot(model_selection_un, aes(x=L, y=AIC, color=seed)) + geom_line() +
   labs(title = "AIC vs Distance L across runs",
        x = "Distance L",
        y = "AIC") +
-  scale_y_continuous(limits = c(18600,19400)) +
+  scale_y_continuous(limits = c(28800,30100)) +
   scale_colour_manual(values = colunif) +
   theme_light() +
   theme(legend.position='none', 
@@ -167,12 +158,11 @@ p3 <- ggplot(model_selection_un, aes(x=L, y=AIC, color=seed)) +  geom_line()+
         axis.title=element_text(size=rel(1.2)),
         plot.title = element_text(face="bold", size=rel(1.3)), 
         legend.title = element_text(size=rel(1.2)), legend.text = element_text(size=rel(1.2)))
-
 p3
 
 p4 <- ggplot(model_selection_un, aes(x=L, y=K, color=seed))+
   geom_line()+
-  scale_y_continuous(limits = c(1,17), breaks=seq(1,17,2)) +
+  scale_y_continuous(limits = c(1,15), breaks=seq(1,15,2)) +
   scale_colour_manual(values = colunif) +
   labs(title = "Number of masses vs Distance L across runs",
        x = "Distance L",
@@ -183,7 +173,6 @@ p4 <- ggplot(model_selection_un, aes(x=L, y=K, color=seed))+
         axis.title=element_text(size=rel(1.2)),
         plot.title = element_text(face="bold", size=rel(1.3)), 
         legend.title = element_text(size=rel(1.2)), legend.text = element_text(size=rel(1.2)))
-
 p4
 
 

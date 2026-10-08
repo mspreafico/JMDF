@@ -45,7 +45,7 @@ gauss3 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      Sigma = SigmaG,
                      mu = muG,
                      M = 1000, L = 1.25,
-                     max.it = 10,  toll = 1e-3)
+                     max.it = 10,  toll = 1e-3, seed = 4)
 
 # Fixed effects - Recurrent (betas)
 gauss3$modelR
@@ -66,7 +66,7 @@ gauss2 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      Sigma = SigmaG,
                      mu = muG,
                      M = 1000, L = 2,
-                     max.it = 10,  toll = 1e-3)
+                     max.it = 10,  toll = 1e-3, seed = 3)
 # Fixed effects - Recurrent (betas)
 gauss2$modelR
 # Fixed effects - Terminal (gammas)
@@ -98,7 +98,7 @@ unif3 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                      ulim.unif = ulim,
                      vlim.unif = vlim,
                      M = 1000, L = 1.25,
-                     max.it = 10,  toll = 1e-3)
+                     max.it = 10,  toll = 1e-3, seed = 2)
 # Fixed effects - Recurrent (betas)
 unif3$modelR
 # Fixed effects - Terminal (gammas)
@@ -118,7 +118,7 @@ unif2 = JMdiscfrail(dataR, formulaR = '~ sex + age + ncom + adherent',
                     ulim.unif = ulim,
                     vlim.unif = vlim,
                     M = 1000, L = 2,
-                    max.it = 10,  toll = 1e-3)
+                    max.it = 10,  toll = 1e-3, seed = 1)
 # Fixed effects - Recurrent (betas)
 unif2$modelR
 # Fixed effects - Terminal (gammas)
@@ -145,6 +145,11 @@ save(gauss2, gauss3, unif2, unif3, file = "results/JMDF_gauss_unif.Rdata")
 data_masses = create.data.masses(gauss3, gauss2, unif3, unif2)
 data_masses[, P := seq_len(.N), by = .(init, K)]
 appendixB = data_masses[,.(init,K,P,u,SE_u,v,SE_v,w)]
+
+appendixB[, c("u", "v", "w") := lapply(.SD, formatC, format="f", digits = 3),
+          .SDcols = c("u", "v", "w")]
+appendixB[, c("SE_u", "SE_v") := lapply(.SD, formatC, format="f", digits = 4),
+          .SDcols = c("SE_u", "SE_v")]
 
 write.csv2(appendixB, "results/tables/table_7.csv", row.names = FALSE)
 
