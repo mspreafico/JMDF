@@ -16,9 +16,9 @@ Code for implementing the simulation study in Section 5.
 * * * 
 - **03_sim_results_manuscript.R** reproduces all Tables and Figures in Section 5.2 of the Manuscript. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the folders **./tables_A/** and **./figures_A/**.
 * * * 
-- **04_sim_results_suppmatS1.R** reproduces all Tables and Figures in Supplementary Material S1. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_A/**, **./tables_B/**, **./figures_A/**, and **./figures_B/** folders, with filenames matching those used in the Supplementary Material.
+- **04_sim_results_suppmatS1.R** reproduces all Tables and Figures in Supplementary Material S1. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_A/** and **./figures_A/** folders, with filenames matching those used in the Supplementary Material.
 * * * 
-- **04_sim_results_suppmatS2.R** reproduces all Tables and Figures in Supplementary Material S2. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_A/**, **./tables_B/**, **./figures_A/**, and **./figures_B/** folders, with filenames matching those used in the Supplementary Material.
+- **04_sim_results_suppmatS2.R** reproduces all Tables and Figures in Supplementary Material S2. The resulting tables and figures are automatically saved as `.csv` and `.pdf` files, respectively, in the corresponding **./tables_B/** and **./figures_B/** folders, with filenames matching those used in the Supplementary Material.
 * * *   
 - **05_audit_workflow.R**
   provides a reduced but fully reproducible audit workflow for spot-checking the
@@ -30,18 +30,14 @@ Code for implementing the simulation study in Section 5.
   **./sim_results_ng_A/audit/** folders.
 * * *
 - **06_audit_inspection.R**
-  provides an example for inspecting the stored intermediate fitted results for
-  a selected scenario and replication. The script allows users to directly
-  inspect the fitted model components (e.g., fixed effects, baseline cumulative
-  hazards, random effects, and subject subgroup assignments) without rerunning
-  the full simulation study.
+  provides an example of how to inspect the stored intermediate fitted results for a selected scenario and replication from the audit   workflow, by examining the model components (e.g., fixed effects, baseline cumulative hazards, random effects, and subject subgroup assignments). It requires running **05_audit_workflow.R** first.
 * * *
 - **06_audit_reproducibility_check.R**
   compares the  audit replications with the corresponding replications obtained by the authors. The script performs the comparison for
   both the fixed-effect and frailty results of the JMDF models and for the
   simulation results of the Ng et al. model, across scenarios 1--9. The
   resulting reproducibility checks are saved as `.csv` files in the respective
-  **./sim_results_A/audit/** and **./sim_results_ng_A/audit/** folders.
+  **./sim_results_A/audit/** and **./sim_results_ng_A/audit/** folders. It requires running **05_audit_workflow.R** first.
 * * *
 - Sub-folders **./figures_A/** and **./figures_B/** contain the simulation result figures generated for settings `A` and `B`, respectively. Figures are saved as `.pdf` files with filenames matching those used in the Manuscript and Supplementary Material.
 - Sub-folders **./sim_data_A/** and **./sim_data_B/** contain the generated data for settings `A` and `B`, respectively.
@@ -62,4 +58,4 @@ Code for implementing the simulation study in Section 5.
 | 05_audit_workflow.R | Audit | JMDF, Unif | A | 1-9 | II, L = 1.5 | 2.01 min | 5 |
 
 
-(Last update: September 30th, 2026)
+(Last update: October 8th, 2026)
