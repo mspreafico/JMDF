@@ -104,15 +104,24 @@ abline(h=0, lty=2)
 abline(v=0, lty=2)
 
 
-# Save fitted model objects for reproducibility and subsequent analyses
-if (exists("jm.rondeau")) {
+# Save fitted model objects (if available) for reproducibility and subsequent analyses
+missing_models <- c(
+  if (!exists("jm.rondeau")) "jm.rondeau" else NULL,
+  if (!exists("jm.ng")) "jm.ng" else NULL
+)
+
+if (length(missing_models) > 0) {
+  stop(
+    "Model convergence issue(s).
+    The following model object(s) are not available: ",
+    paste(missing_models, collapse = ", "),
+    ". 
+    Results are not saved and existing output files are not overwritten.
+    Use load('results/JM_parametric.Rdata') to load the provided files 
+    from the results folder to reproduce the following table and figure."
+  )
+}else{
   save(jm.rondeau, jm.ng, file = "results/JM_parametric.Rdata")
-} else {
-  stop("Convergence problem with frailtyPenal(). 
-       Results are not saved and existing output files are not overwritten.
-       Please load the provided files from the results folder to reproduce 
-       the following table and figure.
-       Use load('results/JM_parametric.Rdata')")
 }
 
 #-----------------------------------------------------------------------
