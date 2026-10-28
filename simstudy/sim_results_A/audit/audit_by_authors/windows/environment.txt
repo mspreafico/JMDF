@@ -1,0 +1,17 @@
+R version 4.3.2 (2023-10-31 ucrt) 
+ x86_64-w64-mingw32 
+      sysname       release       version       machine 
+    "Windows"      "10 x64" "build 26200"      "x86-64" 
+                     zlib                     bzlib                        xz 
+                    "1.3"      "1.0.8, 13-Jul-2019"                   "5.4.4" 
+                     PCRE                       ICU                       TRE 
+       "10.42 2022-12-11"                    "73.2" "TRE 0.8.0 R_fixes (BSD)" 
+                    iconv                  readline                      BLAS 
+              "win_iconv"                        ""                        "" 
+              package version
+survival     survival   3.8.3
+MASS             MASS  7.3.60
+mvtnorm       mvtnorm   1.2.4
+data.table data.table 1.14.10
+mcprogress mcprogress   0.1.1
+dplyr           dplyr   1.1.4

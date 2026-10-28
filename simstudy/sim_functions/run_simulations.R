@@ -11,7 +11,8 @@ nreps_audit = 5
 
 # Function to run Ng et al.'s simulations under a given setting
 #-----------------------------------------------------------------
-run.simulations.ng <- function(setting, audit = FALSE, audit.reps = nreps_audit){
+run.simulations.ng <- function(setting, n.cores = 1,
+                               audit = FALSE, audit.reps = nreps_audit){
   
   data.dir = paste0('sim_data_',setting)
   # Create folder
@@ -81,7 +82,8 @@ run.simulations.ng <- function(setting, audit = FALSE, audit.reps = nreps_audit)
 #   - and threshold:
 #       - L = 1, 1.5, 2
 #-------------------------------------------------------------------------------
-run.simulations.jmdf.gauss <- function(setting, folder, audit = FALSE, audit.reps = nreps_audit){
+run.simulations.jmdf.gauss <- function(setting, folder, n.cores = 1,
+                                       audit = FALSE, audit.reps = nreps_audit){
   
   # Create directory for saving results
   data.dir = paste0('sim_data_',setting)
@@ -174,7 +176,8 @@ run.simulations.jmdf.gauss <- function(setting, folder, audit = FALSE, audit.rep
 #   - and threshold:
 #       - L = 1, 1.5, 2
 #-------------------------------------------------------------------------------
-run.simulations.jmdf.unif <- function(setting, folder, audit = FALSE, audit.reps = nreps_audit){
+run.simulations.jmdf.unif <- function(setting, folder, n.cores = 1,
+                                      audit = FALSE, audit.reps = nreps_audit){
   
   # Create directory for saving results
   data.dir = paste0('sim_data_',setting)

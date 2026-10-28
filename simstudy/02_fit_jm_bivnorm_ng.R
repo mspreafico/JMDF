@@ -14,8 +14,13 @@
 setwd(file.path(getwd(),'simstudy'))
 
 # Number of cores
-available = parallel::detectCores()
-n.cores = if (available >= 40) 40 else max(1, available - 2)
+if (.Platform$OS.type == "windows") {
+  # mclapply/pmclapply supports only mc.cores = 1 on Windows
+  n_cores = 1
+} else {
+  available = parallel::detectCores()
+  n_cores = if (available >= 20) 20 else max(1, available - 2)
+}
 
 library(mcprogress)
 
@@ -28,9 +33,9 @@ source('sim_functions/extract_sim_results.R')
 
 # Setting A: yielding approximately 80% death and 20% administrative censoring
 #-----------------------------------------------------------------------------
-run.simulations.ng(setting = 'A')
+run.simulations.ng(setting = 'A', n.cores = n_cores)
 
 # Setting B: yielding approximately 50% death and 50% administrative censoring
 #-----------------------------------------------------------------------------
-run.simulations.ng(setting = 'B')
+run.simulations.ng(setting = 'B', n.cores = n_cores)
 

@@ -14,8 +14,13 @@
 setwd(file.path(getwd(),'simstudy'))
 
 # Number of cores
-available = parallel::detectCores()
-n.cores = if (available >= 20) 20 else max(1, available - 2)
+if (.Platform$OS.type == "windows") {
+  # mclapply/pmclapply supports only mc.cores = 1 on Windows
+  n_cores = 1
+} else {
+  available = parallel::detectCores()
+  n_cores = if (available >= 20) 20 else max(1, available - 2)
+}
 
 # Load functions
 source('sim_functions/sim_data_joint_frail.R')
@@ -48,39 +53,39 @@ library(mcprogress)
 #-------------------------------------------------------------------------
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting A, with initialization (ii) and threshold L = 1.5
-run.simulations.jmdf.unif(setting = 'A', folder = 'II_L15')
+run.simulations.jmdf.unif(setting = 'A', folder = 'II_L15', n.cores = n_cores)
 
 
 # Simulations for Supplementary Material S1.2
 #-------------------------------------------------------------------------
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting A, with initialization (i) and threshold L = 1.5
-run.simulations.jmdf.unif(setting = 'A', folder = 'I_L15')
+run.simulations.jmdf.unif(setting = 'A', folder = 'I_L15', n.cores = n_cores)
 
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting A, with initialization (ii) and threshold L = 1
-run.simulations.jmdf.unif(setting = 'A', folder = 'II_L1')
+run.simulations.jmdf.unif(setting = 'A', folder = 'II_L1', n.cores = n_cores)
 
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting A, with initialization (ii) and threshold L = 2
-run.simulations.jmdf.unif(setting = 'A', folder = 'II_L2')
+run.simulations.jmdf.unif(setting = 'A', folder = 'II_L2', n.cores = n_cores)
 
 
 # Simulations for Supplementary Material S2.3
 #-------------------------------------------------------------------------
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting B, with initialization (i) and threshold L = 1.5
-run.simulations.jmdf.unif(setting = 'B', folder = 'I_L15')
+run.simulations.jmdf.unif(setting = 'B', folder = 'I_L15', n.cores = n_cores)
 
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting B, with initialization (ii) and threshold L = 1
-run.simulations.jmdf.unif(setting = 'B', folder = 'II_L1')
+run.simulations.jmdf.unif(setting = 'B', folder = 'II_L1', n.cores = n_cores)
 
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting B, with initialization (ii) and threshold L = 1.5
-run.simulations.jmdf.unif(setting = 'B', folder = 'II_L15')
+run.simulations.jmdf.unif(setting = 'B', folder = 'II_L15', n.cores = n_cores)
 
 # Estimate JMDF using Uniform initialization for data/scenarios generated 
 # under setting B, with initialization (ii) and threshold L = 2
-run.simulations.jmdf.unif(setting = 'B', folder = 'II_L2')
+run.simulations.jmdf.unif(setting = 'B', folder = 'II_L2', n.cores = n_cores)
 
