@@ -39,6 +39,9 @@ Code for implementing the simulation study in Section 5.
   resulting reproducibility checks are saved as `.csv` files in the respective
   **./sim_results_A/audit/** and **./sim_results_ng_A/audit/** folders. It requires running **05_audit_workflow.R** first.
 * * *
+- **07_audit_reproducibility_check_unix_windows.R**
+  compares the audit results obtained by the authors by running **05_audit_workflow.R** on unix/macOS and on Windows, stored in the **./sim_results_A/audit/audit_by_authors/unix** and **./sim_results_A/audit/audit_by_authors/windows** folders. The script performs the comparison for both the fixed-effect and frailty results of the JMDF models with Gaussian and Uniform initializations, across scenarios 1--9, using strict and large numerical tolerances. The number of frailty groups (K) is checked exactly. The results are printed in the console. It does not require running **05_audit_workflow.R**, since the audit results for both operating systems are already provided.
+* * * 
 - Sub-folders **./figures_A/** and **./figures_B/** contain the simulation result figures generated for settings `A` and `B`, respectively. Figures are saved as `.pdf` files with filenames matching those used in the Manuscript and Supplementary Material.
 - Sub-folders **./sim_data_A/** and **./sim_data_B/** contain the generated data for settings `A` and `B`, respectively.
 - Sub-folder **./sim_functions/** contains auxiliary functions used by the simulation and audit workflows. In particular, **run_simulations.R** contains the functions used to run the Ng et al., Gaussian JMDF, and Uniform JMDF simulation workflows, with the option to run either the full set of replications or a reduced number of replications for the audit workflow.
@@ -60,4 +63,4 @@ The following execution times refer to running on unix/macOS.
 | 05_audit_workflow.R | Audit | JMDF, Unif | A | 1-9 | II, L = 1.5 | 2.01 min | 5 |
 
 
-(Last update: October 8th, 2026)
+(Last update: October 28th, 2026)
