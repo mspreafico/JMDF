@@ -30,27 +30,26 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
     # Loop over the nine simulation scenarios
     lapply(1:9, function(scenario) {
       
-      # Load audit results
+      # Load audit results from windows
       audit.windows = paste0("sim_results_",setting,"/audit/audit_by_authors/windows/s",
                              scenario,"_JMDF_",method, folder,".Rdata")
       if (!file.exists(audit.windows)) {
         stop("Audit results not found. Please run '05_audit_workflow.R' first.")
       }
       load(audit.windows)
-      coef.results.audit <- coef.results
-      frail.results.audit <- frail.results
+      coef.results.windows <- coef.results
+      frail.results.windows <- frail.results
       
       
-      # Load complete results
+      # Load audit results from macOS
       audit.unix = paste0("sim_results_",setting,"/audit/audit_by_authors/unix/s",
                           scenario,"_JMDF_",method, folder,".Rdata")
       load(audit.unix)
-      coef.results.authors <- coef.results
-      frail.results.authors <- frail.results
+      coef.results.unix <- coef.results
+      frail.results.unix <- frail.results
       
-      # Compare the audit results with the corresponding first `audit.reps`
-      # replications from the full simulation results
-      audit.reps = nrow(coef.results.audit)
+      # Compare the Windows and unix/macOS replications
+      audit.reps = nrow(coef.results.windows)
       # Model estimates and standard errors to be compared
       coef.vars = c("beta1", "beta2","gamma1", "gamma2",
                     "se_beta1", "se_beta2","se_gamma1", "se_gamma2")
@@ -65,8 +64,8 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
           1:audit.reps,
           function(i)
             isTRUE(all.equal(
-              coef.results.audit[i, coef.vars, drop = FALSE],
-              coef.results.authors[i, coef.vars, drop = FALSE],
+              coef.results.windows[i, coef.vars, drop = FALSE],
+              coef.results.unix[i, coef.vars, drop = FALSE],
               tolerance = tol
             ))
         ),
@@ -75,8 +74,8 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
         K = sapply(
           1:audit.reps,
           function(i) {
-            coef.results.audit$K[i] ==
-              coef.results.authors$K[i]
+            coef.results.windows$K[i] ==
+              coef.results.unix$K[i]
           }
         ),
         
@@ -84,8 +83,8 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
         K_difference = sapply(
           1:audit.reps,
           function(i) {
-            coef.results.audit$K[i] -
-              coef.results.authors$K[i]
+            coef.results.windows$K[i] -
+              coef.results.unix$K[i]
           }
         ),
         
@@ -94,16 +93,16 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
           1:audit.reps,
           function(i) {
             
-            K.audit <- coef.results.audit$K[i]
-            K.authors <- coef.results.authors$K[i]
+            K.windows <- coef.results.windows$K[i]
+            K.unix <- coef.results.unix$K[i]
             
-            if (K.audit != K.authors) {
+            if (K.windows != K.unix) {
               return("Not comparable")
             }
             
             # Fix label switching
-            audit_i <- frail.results.audit[frail.results.audit$rep_b == i, , drop = FALSE]
-            complete_i <- frail.results.authors[frail.results.authors$rep_b == i, , drop = FALSE]
+            audit_i <- frail.results.windows[frail.results.windows$rep_b == i, , drop = FALSE]
+            complete_i <- frail.results.unix[frail.results.unix$rep_b == i, , drop = FALSE]
             
             # Order groups by Pu
             audit_i <- audit_i[order(audit_i$Pu), , drop = FALSE]

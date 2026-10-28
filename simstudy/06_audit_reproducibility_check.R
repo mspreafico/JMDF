@@ -63,8 +63,7 @@ audit.checks.jmdf <- function(setting, folder, method,
       coef.results.authors <- coef.results
       frail.results.authors <- frail.results
       
-      # Compare the audit results with the corresponding first `audit.reps`
-      # replications from the full simulation results
+      # Compare the audit results with the corresponding audit by the authors
       audit.reps = nrow(coef.results.audit)
       # Model estimates and standard errors to be compared
       coef.vars = c("beta1", "beta2","gamma1", "gamma2",
