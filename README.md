@@ -45,4 +45,4 @@ These analyses use the pseudo-data example (`./data/fake_dataRD.Rdata`) and are 
 
 For additional details, see file [SessionInfo.txt](https://github.com/mspreafico/JMDF/blob/main/SessionInfo.txt)
 
-(Last update: August 28th, 2026)
+(Last update: October 29th, 2026)
