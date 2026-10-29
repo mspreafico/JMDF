@@ -51,7 +51,7 @@ Code for implementing the simulation study in Section 5.
 * * * 
 ## Execution time
 
-The following execution times refer to running on unix/macOS.
+The following execution times refer to running on unix/macOS (see file [SessionInfo.txt](https://github.com/mspreafico/JMDF/blob/main/SessionInfo.txt)).
 
 | File | Cohort | Model | Setting | Scenarios | Init, L | Execution time | Parallel cores |
 |------|-------|-------|---------| ----------|---------|----------------|----------------|
