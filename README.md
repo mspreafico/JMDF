@@ -42,5 +42,7 @@ These analyses use the pseudo-data example (`./data/fake_dataRD.Rdata`) and are 
 ## Software
 - R software.
 - Packages: data.table, dplyr, frailtyPenal, ggplot2, ggpubr, gt, MASS, mcprogress, mvtnorm, parallel, survival.
-  
+
+For additional details, see file [SessionInfo.txt](https://github.com/mspreafico/JMDF/blob/main/SessionInfo.txt)
+
 (Last update: August 28th, 2026)
