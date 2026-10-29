@@ -101,21 +101,21 @@ audit.checks.jmdf.unix.wind <- function(setting, folder, method, tol = 1e-8) {
             }
             
             # Fix label switching
-            audit_i <- frail.results.windows[frail.results.windows$rep_b == i, , drop = FALSE]
-            complete_i <- frail.results.unix[frail.results.unix$rep_b == i, , drop = FALSE]
+            windows_i <- frail.results.windows[frail.results.windows$rep_b == i, , drop = FALSE]
+            unix_i <- frail.results.unix[frail.results.unix$rep_b == i, , drop = FALSE]
             
             # Order groups by Pu
-            audit_i <- audit_i[order(audit_i$Pu), , drop = FALSE]
-            complete_i <- complete_i[order(complete_i$Pu), , drop = FALSE]
+            windows_i <- windows_i[order(windows_i$Pu), , drop = FALSE]
+            unix_i <- unix_i[order(unix_i$Pu), , drop = FALSE]
             
             # Remove group labels and rownames because they are arbitrary
-            audit_i$group <- NULL
-            complete_i$group <- NULL
+            windows_i$group <- NULL
+            unix_i$group <- NULL
             
-            rownames(audit_i) <- NULL
-            rownames(complete_i) <- NULL
+            rownames(windows_i) <- NULL
+            rownames(unix_i) <- NULL
             
-            isTRUE(all.equal(audit_i, complete_i, tolerance = tol))
+            isTRUE(all.equal(windows_i, unix_i, tolerance = tol))
           }
         )
       )

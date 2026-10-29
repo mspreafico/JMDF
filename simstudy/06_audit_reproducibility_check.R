@@ -56,7 +56,7 @@ audit.checks.jmdf <- function(setting, folder, method,
       frail.results.audit <- frail.results
       
       
-      # Load complete results
+      # Load authors' results based on the os.type environment
       authors.path = paste0("sim_results_",setting,"/audit/audit_by_authors/",
                             os.type,"/s",scenario,"_JMDF_",method, folder,".Rdata")
       load(authors.path)
@@ -117,20 +117,20 @@ audit.checks.jmdf <- function(setting, folder, method,
             
             # Fix label switching
             audit_i <- frail.results.audit[frail.results.audit$rep_b == i, , drop = FALSE]
-            complete_i <- frail.results.authors[frail.results.authors$rep_b == i, , drop = FALSE]
+            authors_i <- frail.results.authors[frail.results.authors$rep_b == i, , drop = FALSE]
             
             # Order groups by Pu
             audit_i <- audit_i[order(audit_i$Pu), , drop = FALSE]
-            complete_i <- complete_i[order(complete_i$Pu), , drop = FALSE]
+            authors_i <- authors_i[order(authors_i$Pu), , drop = FALSE]
             
             # Remove group labels and rownames because they are arbitrary
             audit_i$group <- NULL
-            complete_i$group <- NULL
+            authors_i$group <- NULL
             
             rownames(audit_i) <- NULL
-            rownames(complete_i) <- NULL
+            rownames(authors_i) <- NULL
             
-            isTRUE(all.equal(audit_i, complete_i, tolerance = tol))
+            isTRUE(all.equal(audit_i, authors_i, tolerance = tol))
           }
         )
       )
@@ -165,7 +165,7 @@ audit.checks.ng <- function(setting, tol = 10e-8, save.check = TRUE) {
       load(audit.path)
       sim.results.audit <- sim.results
       
-      # Load complete results
+      # Load authors' results
       authors.path = paste0("sim_results_ng_", setting, "/audit/audit_by_authors/s",scenario,"_JMNg.Rdata")
       load(authors.path)
       sim.results.authors <- sim.results
