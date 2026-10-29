@@ -39,7 +39,7 @@ Code for implementing the simulation study in Section 5.
   resulting reproducibility checks are saved as `.csv` files in the respective
   **./sim_results_A/audit/** and **./sim_results_ng_A/audit/** folders. It requires running **05_audit_workflow.R** first.
 * * *
-- **07_audit_reproducibility_check_unix_windows.R**
+- **07_audit_macos_windows_comparison.R**
   compares the audit results obtained by the authors by running **05_audit_workflow.R** on unix/macOS and on Windows, stored in the **./sim_results_A/audit/audit_by_authors/unix** and **./sim_results_A/audit/audit_by_authors/windows** folders. The script performs the comparison for both the fixed-effect and frailty results of the JMDF models with Gaussian and Uniform initializations, across scenarios 1--9, using strict and large numerical tolerances. The number of frailty groups (K) is checked exactly. The results are printed in the console. It does not require running **05_audit_workflow.R**, since the audit results for both operating systems are already provided.
 * * * 
 - Sub-folders **./figures_A/** and **./figures_B/** contain the simulation result figures generated for settings `A` and `B`, respectively. Figures are saved as `.pdf` files with filenames matching those used in the Manuscript and Supplementary Material.
