@@ -1,3 +1,5 @@
+These audit results have been obtained in the following environment:
+
 R version 4.3.2 (2023-10-31 ucrt) 
  x86_64-w64-mingw32 
       sysname       release       version       machine 
